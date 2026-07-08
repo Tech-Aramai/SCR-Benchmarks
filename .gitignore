@@ -1,0 +1,21 @@
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Build artifacts
+dist/
+build/
+
+# Extracted fixtures — regenerate per corpus from corpora/<name>/schemas-zip/*.zip
+corpora/*/fixtures/zip/
+
+docs/
+
+*.log

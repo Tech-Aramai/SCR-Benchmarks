@@ -1,0 +1,35 @@
+# SCR Benchmark — GLOBAL configuration (matrix defaults)
+#
+# This file describes the experiment matrix that is shared across every corpus.
+# Corpus-specific settings (schema sources, the MCP project, sample/results
+# locations) live in corpora/<name>/corpus.yaml, which may also override any of
+# the values below. Secrets live in .env (see .env.example).
+#
+# Run a corpus with:  scr-bench --corpus nf-htan run
+
+models:
+  # Add or remove model tiers here. Aliases are floating; `model_resolved` is
+  # logged per run so silent alias drift is visible in the audit trail.
+  - id: opus-4-7
+    alias: claude-opus-4-7
+  - id: haiku-4-5
+    alias: claude-haiku-4-5-20251001
+  # - id: sonnet-4-6
+  #   alias: claude-sonnet-4-6
+
+# Same grader for every grading call.
+grader_model: claude-opus-4-7
+
+reps_per_model: 3
+max_tokens: 4096
+
+# Note: Opus 4.7 rejects sampling parameters; the harness only sends `temperature`
+# to older models. Kept here so the value is captured in run records.
+temperature: 0
+
+# All three retrieval variants. The ZIP variant requires the corpus's
+# fixtures/zip/ to be pre-extracted from its schemas-zip/*.zip — see README.
+variants: [mcp, url, zip]
+
+# All four sample types.
+sample_types: [exact, ambiguous, foreign, chimeric]
