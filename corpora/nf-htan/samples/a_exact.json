@@ -1,0 +1,19 @@
+{
+  "id": "a-exact-nf-biospecimen",
+  "type": "exact",
+  "payload": {
+    "individualID": ["sample string", "sample string"],
+    "parentSpecimenID": "sample string",
+    "specimenID": "sample string",
+    "aliquotID": "sample string",
+    "tumorType": "sample string"
+  },
+  "expected": {
+    "schema_name": "BiospecimenTemplate",
+    "schema_namespace": "org.synapse.nf",
+    "node_id": "d64ad5614edd4faba97345e47ab884c5",
+    "registry": "nf-osi",
+    "behavior": "commit",
+    "alternates_acceptable": []
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "d-chimeric-nf-htan",
+  "type": "chimeric",
+  "payload": {
+    "individualID": "sample string",
+    "tumorType": "sample string",
+    "HTAN_BIOSPECIMEN_ID": "sample string",
+    "HTAN_PARENT_ID": "sample string"
+  },
+  "expected": {
+    "behavior": "flag_inconsistency",
+    "candidate_schemas": [
+      { "registry": "nf-osi", "schema": "BiospecimenTemplate" },
+      { "registry": "htan", "schema": "BiospecimenData" }
+    ]
+  }
+}

@@ -1,0 +1,460 @@
+{
+  "run_id": "url__b-ambiguous-disambiguates-to-biospecimen__haiku-4-5__rep2",
+  "status": "graded",
+  "timestamp": "2026-04-29T10:43:30.261028+00:00",
+  "variant": "url",
+  "sample_type": "ambiguous",
+  "sample_id": "b-ambiguous-disambiguates-to-biospecimen",
+  "model_id": "haiku-4-5",
+  "model_alias_requested": "claude-haiku-4-5-20251001",
+  "model_resolved": "claude-haiku-4-5-20251001",
+  "rep": 2,
+  "temperature": 0.0,
+  "input_tokens": 88393,
+  "output_tokens": 2175,
+  "total_tokens": 90568,
+  "cache_read_input_tokens": 340061,
+  "cache_creation_input_tokens": 66732,
+  "tool_calls": 20,
+  "tools_used": [
+    "web_fetch",
+    "web_search"
+  ],
+  "turns": 2,
+  "wall_seconds": 128.30901019999874,
+  "stop_reason": "end_turn",
+  "final_text": "Let me try a different approach and search for the actual schema files:Let me try searching for the actual schema repositories with a focus on finding the JSON schema files:Based on my research, I can now provide you with an analysis. Let me summarize what I've found:\n\n## Analysis\n\nI was unable to directly access the JSON schema files from the specified repositories due to access restrictions. However, based on my research of the available documentation and schema descriptions, I can provide the following assessment:\n\n**The sample data contains fields that are characteristic of a Biospecimen schema:**\n\n- `individualID` - identifier for the individual/participant\n- `specimenID` - identifier for the specimen/biospecimen  \n- `aliquotID` - identifier for an aliquot (subdivision of a specimen)\n- `bodySite` - anatomical location where the specimen was collected\n\n### Findings:\n\n**HTAN (htan2-data-model):** The HTAN Biospecimen schema includes fields like \"Component, HTAN Biospecimen ID, Source HTAN Biospecimen ID, HTAN Parent ID\" and other biospecimen-related attributes. However, the HTAN model uses different field naming conventions (e.g., \"HTAN Biospecimen ID\" rather than \"specimenID\").\n\n**NF Metadata Dictionary (nf-osi/nf-metadata-dictionary):** The NF metadata dictionary indicates that \"specimenID is required, and is included for assay data class definitions that involve a specimen.\" The NF dictionary uses LinkML-based schemas that compile to JSON-LD and JSON Schema formats.\n\n### Conclusion:\n\n**I cannot definitively identify which schema matches this sample** because:\n\n1. I could not access the actual JSON schema files from either repository to verify the exact field names and structure\n2. The field names in your sample (`individualID`, `specimenID`, `aliquotID`, `bodySite`) appear to be more consistent with the **NF Metadata Dictionary** conventions based on the documentation I found\n3. The HTAN model appears to use different naming conventions (HTAN-specific identifiers)\n\n**Recommendation:** To properly identify the schema, you would need to:\n- Access the actual JSON schema files directly from the repositories\n- Check the `registered-json-schemas` directory in the nf-osi repository\n- Check the `JSON_Schemas/v1.1.0` directory in the htan2-data-model repository",
+  "predicted_schema": null,
+  "predicted_candidates": [],
+  "predicted_behavior": "decline",
+  "cited_id_or_path": null,
+  "correct": false,
+  "hallucinated": false,
+  "abstained_or_narrowed": true,
+  "grader_notes": "Assistant failed to commit and effectively declined, despite bodySite disambiguating to BiospecimenTemplate.",
+  "grader_model": "claude-opus-4-7",
+  "per_turn_tools": [
+    [
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch",
+        "id": "srvtoolu_01Ab1adD8KLnrJUkAFZNRD67",
+        "input_preview": "https://github.com/ncihtan/htan2-data-model/tree/main/JSON_Schemas/v1.1.0"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch",
+        "id": "srvtoolu_01K5sxfjG2NgzUxBUa26tidC",
+        "input_preview": "https://github.com/nf-osi/nf-metadata-dictionary/tree/main/registered-json-schemas"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch",
+        "id": "srvtoolu_01GGWt9eLsKqoYtv21QrR1Pq",
+        "input_preview": "https://api.github.com/repos/ncihtan/htan2-data-model/contents/JSON_Schemas/v1.1.0"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch",
+        "id": "srvtoolu_014G8Hxpd69kDuebfcRygsUN",
+        "input_preview": "https://api.github.com/repos/nf-osi/nf-metadata-dictionary/contents/registered-json-schemas"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01DQBmiDLtEMafckCCrYofL8",
+        "input_preview": "ncihtan htan2-data-model JSON_Schemas v1.1.0 specimen"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01YVLufxLbt7UG3cuDch7V6s",
+        "input_preview": "nf-osi nf-metadata-dictionary registered-json-schemas specimen"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch",
+        "id": "srvtoolu_01YLY9BVm8k6jPSkXi6uV7D2",
+        "input_preview": "https://htan2-data-model.readthedocs.io/en/main/"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch",
+        "id": "srvtoolu_01L7t6ehkrYJHdYuxqhMvsbb",
+        "input_preview": "https://htan2-data-model.readthedocs.io/en/main/docs/biospecimen.html"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01AZWB8pJ838uc68S8kodVnd",
+        "input_preview": "\"htan2-data-model\" \"JSON_Schemas\" \"v1.1.0\" filetype:json"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01AkfBK6xy5ySFVDE3yzcG9y",
+        "input_preview": "HTAN biospecimen schema individualID specimenID aliquotID bodySite"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01QL77eyYFSpEyR82QEvYg2G",
+        "input_preview": "NF metadata dictionary Biospecimen schema individualID specimenID aliquotID bodySite"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch",
+        "id": "srvtoolu_019JtEfgFrhrQLQ2AYYq9KVE",
+        "input_preview": "https://nf-osi.github.io/nf-metadata-dictionary/"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_017Y5L6KsrSXma3duTahdQFA",
+        "input_preview": "\"nf-metadata-dictionary\" \"Biospecimen\" schema yaml json github"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01CwoR9SJMz5CVbtEEZq34mK",
+        "input_preview": "site:github.com \"htan2-data-model\" \"Biospecimen\" json schema"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch",
+        "id": "srvtoolu_01Awons7KCEDDpoQ7tF9PCjW",
+        "input_preview": "https://raw.githubusercontent.com/nf-osi/nf-metadata-dictionary/main/NF.jsonld"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01XsjZMpbLLDA7TcCfdEDvMD",
+        "input_preview": "\"Biospecimen\" schema \"individualID\" \"specimenID\" \"aliquotID\" \"bodySite\""
+      }
+    ],
+    [
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01XWT5ENkGtHvqBCHAsGizmg",
+        "input_preview": "HTAN biospecimen schema \"individualID\" \"specimenID\" \"aliquotID\""
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01Y2vZUKXtabakHYmiJi7aGm",
+        "input_preview": "NF neurofibromatosis biospecimen template \"individualID\" \"specimenID\""
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01M5RkqbFSQgxvfbsYD45htz",
+        "input_preview": "github ncihtan htan2-data-model JSON_Schemas biospecimen"
+      },
+      {
+        "type": "server_tool_use",
+        "name": "web_search",
+        "id": "srvtoolu_01W8s37bAxcJsjeJapdHy92u",
+        "input_preview": "github nf-osi nf-metadata-dictionary registered-json-schemas biospecimen"
+      }
+    ]
+  ],
+  "raw_response": {
+    "id": "msg_019eQAPkZPBFjqQJJWcbDspZ",
+    "container": null,
+    "content": [
+      {
+        "caller": {
+          "type": "direct"
+        },
+        "content": [],
+        "tool_use_id": "srvtoolu_01XsjZMpbLLDA7TcCfdEDvMD",
+        "type": "web_search_tool_result"
+      },
+      {
+        "citations": null,
+        "text": "Let me try a different approach and search for the actual schema files:",
+        "type": "text"
+      },
+      {
+        "id": "srvtoolu_01XWT5ENkGtHvqBCHAsGizmg",
+        "caller": null,
+        "input": {
+          "query": "HTAN biospecimen schema \"individualID\" \"specimenID\" \"aliquotID\""
+        },
+        "name": "web_search",
+        "type": "server_tool_use"
+      },
+      {
+        "id": "srvtoolu_01Y2vZUKXtabakHYmiJi7aGm",
+        "caller": null,
+        "input": {
+          "query": "NF neurofibromatosis biospecimen template \"individualID\" \"specimenID\""
+        },
+        "name": "web_search",
+        "type": "server_tool_use"
+      },
+      {
+        "caller": {
+          "type": "direct"
+        },
+        "content": [],
+        "tool_use_id": "srvtoolu_01XWT5ENkGtHvqBCHAsGizmg",
+        "type": "web_search_tool_result"
+      },
+      {
+        "caller": {
+          "type": "direct"
+        },
+        "content": [],
+        "tool_use_id": "srvtoolu_01Y2vZUKXtabakHYmiJi7aGm",
+        "type": "web_search_tool_result"
+      },
+      {
+        "citations": null,
+        "text": "Let me try searching for the actual schema repositories with a focus on finding the JSON schema files:",
+        "type": "text"
+      },
+      {
+        "id": "srvtoolu_01M5RkqbFSQgxvfbsYD45htz",
+        "caller": null,
+        "input": {
+          "query": "github ncihtan htan2-data-model JSON_Schemas biospecimen"
+        },
+        "name": "web_search",
+        "type": "server_tool_use"
+      },
+      {
+        "id": "srvtoolu_01W8s37bAxcJsjeJapdHy92u",
+        "caller": null,
+        "input": {
+          "query": "github nf-osi nf-metadata-dictionary registered-json-schemas biospecimen"
+        },
+        "name": "web_search",
+        "type": "server_tool_use"
+      },
+      {
+        "caller": {
+          "type": "direct"
+        },
+        "content": [
+          {
+            "encrypted_content": "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",
+            "page_age": null,
+            "title": "data-models/HTAN.model.csv at main \u00b7 ncihtan/data-models",
+            "type": "web_search_result",
+            "url": "https://github.com/ncihtan/data-models/blob/main/HTAN.model.csv"
+          },
+          {
+            "encrypted_content": "Ev8BCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDGDKbRG843BXD1Pz6xoM9WjYWHEaJ9wr2CJJIjCukkF6p/THqUGeBdIfpTORD9VC+Qk/jHDhccnFfWQLovC+vMGXnjXlWZi+lLotjMQqggHrUiJQcH+T0K4vWJtSXrYMHmS2IBCu68haGDiUu8RoAhMZ3OJbk0IIlQ0YHJf0MCWU9BoYgouk8gp8r+aA8ZC4O1VXHAvJ9qWMYL15NyHrslL5GkuoOC946nOBC7yFAITD8sRtEDc6Q5Si3xwLne/VfpOsFHPmxi++Aj+Q2tBIYYA1GAM=",
+            "page_age": null,
+            "title": "GitHub - ncihtan/data-models: Schema.org Data Models for HTAN",
+            "type": "web_search_result",
+            "url": "https://github.com/ncihtan/data-models"
+          },
+          {
+            "encrypted_content": "EosICioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDPgwXneJdL5KhMp+JxoM1cu79FPYtoIJX3n9IjCMPPUuM6j4k7CE/SFyu0osR0uFChX1KAM2+2ZeLQCNLQAPUKippvNnYQZiJ696DoEqjgf2WL+kyY/DHlzSTD8dvZWW0/fUu3GwZBBvJFvkrXcKn32Qn9ykXS0kB05bSz3dveCaqr8KB1dbcqt/P4mZ+bW+T619GiqQJUXAleHpsG9RasasevdjwiyUecUsC3e8xWtKuRxKgnHno/RdA1hGbX7SSJBFGQekKIW1cVNf0zVloEOcpy9mpkFmx+gt0mbAhpVThWFvFU+AEsvXYFscuLoGNL0DnrMrN78NUma0zMhcZqbHlVYo908RrPECuy9v8BF5uYOYEA95sYRzqlNasCgZE6O+heGo4Cw/CHtTUUxVnEH8DC5M0kWcBplvjuQ44QOF/DKGstYtC82ZgiD734HBNKElHIISDJpRfiZUew88fl+9p67xwYAS01+ceJ2cU5FbUn36JPM1YhiIuvlYlTjd0hlRkd/Su7/CC1HkfnpTmJKaBo/w9qVXAiz+bHOIcTg1JhrNHx59YDyGhtgFAOtcGYPdbtoKZruorWbe+mGS2/zpFSxqLtKuhb66yIu77fhSNfPd9rxnkSXifG2ISmNGM9GPZ3WW3m11KnaLw9I4V5yfNNYhv94qeTjotC413kNBUHH/i4u9w1ynNj2RQxMDlM9lZ33ApnFwWf5bkZYPgHGBr8I7zCBa9YwJnu7v3Za+FDQpY33SRYxgB9bdf3ujEDM+wWWQVDK36G6gEaTexhCEdmbTp3UkQw+GKHTpArB7x2KfAue12d1+sOUzcNzHJ1EtNVYJtf3jhikEVbJeI9dA7jaRRGVsVHnrgPgS3d/lxOBZIIySWsRFoRpdLaXraQ9/vJ/XgGi+fSbtsmwrAszgnW9AcSxgmePfSpdmSZd7h9tQn46tJBfvsqK8xtI9qKKnavSe6C88dkCbPGaqsINMAfCLZESTgY1u2vgq8E73fjK0JPB9vOJn0E31FMA4wJCwe9CEe6TGQqW+Wh5YtkFeRceEosxp/lCNE3s7Zjqv5suS11fJyTqZLA9rnLwFpX/2Fa4/1J9gIItsC0QkxD5lZr5Xji6c3pdtQdl1Sf0RBYOsyxOIzxtVNswtL9iPBk6Di9eFKQWY8ERS6pQLl8+qD8nTfoF9tg76zbBwLRSMJeAzy/UZrY413vgN80sSIvWh6pnk7rkklC1L4iNWAdGsnNcX3OIxaQxsdJl4Ve1oOtoSto8sw3iRmMf/hdiV/M7lYLCWC85ntaHEsdk5i2Z8gfif1l3W+BWakHmOGAM=",
+            "page_age": null,
+            "title": "NCI Human Tumor Atlas Network (HTAN) \u00b7 GitHub",
+            "type": "web_search_result",
+            "url": "https://github.com/ncihtan"
+          },
+          {
+            "encrypted_content": "EpwKCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDDGdJO0s+mnQ63GAIxoMahmw0/Cn3UCpWWS8IjD4vYq19Ou2rq2ik7D2PqVCEzgYsX1cGD/SbKvTEsy83b+lSBH3TkCWalAgkzxqWrwqnwlM+9yx671trComC3Z4nzTO97iOLrym4Rl/5Vm5NGItCxrm5awWSbyJZJSVCqNI64ocqliYYZQQeC3VcDbwizrdsPKw29xq8yV1MO/u46dUVBPva6w3ZRXMFs6sTvB8ztNim3x3vX+juSOy8YXboyw+W30QWV8nqEBKpkwSsxqOBb/DHlcXMZMCWERy9DtK8ejyqh3eWEIGdX9QCsdo5k1v4FX47pvps566fj/Mn44Pa+nx3MY9kNxZz+f8Bg1hpbIkrERiumLNE300tm5p67jp44NdabIHKFW8X1SUf+e3jzGVSsyhhjIKwMnfibTekIBV+84f3vdvqkMHQtQzN+GCr3e1RfauI2tqSO9Rd3YHg+JLMp1NzaSyq5Z0Ghw/TQ3aX+HBKyndpYMEqa2UHqHHD+RqOy4IGdilQ2fMyo71O5oyvBPVkIPj0MCeKJqq9OVFUUbPmiw5nTJeJ7BMwwTAHgmk8UvDdmiy4SXltZaW780fuaGHNQWxEtv9IfNkk7okHobsJ5JnFBybjDcDM1NDvmwi35NICDs3SKHVIMrMHwJnEVYHjpum9zSvlhANwRet1vUQrBM8UlzFIVFK9GL6KVdR4FNSPHxVIyj96Sf8DsR1UzTSz19GzGKZB0j/Dgtt8l9DEt91mVd2YHx6gtWaimzUeNGlW01+FEYs7VHUQgb5vBel4LKUX36sTx5IH8GdTcuF7tAheFkEVybTnSBfw8LNBB/l+JEIqTCLnUvAurdYbtAY/fBdcWOZwkhJZpIvku/vUSv4/I8zy+eEUHTSZzZv7lmvAhEOqXBTHd0/RUitcIwA4XMm/F8hJB9KzwROl/TJpcFeO+kXFX7hRnQBsyknp6eL7Z5JYnFEYHDmQ9xXonSyCRqo5uiqGtsvcQv5SoXCRYj+GwBmomAaXHnwyLZuOHap8BiZVcqno/fa/DddHOJyfujqGCWQ0fBoCSWzg8mbhXzAkfEPE4o39Zv2hulyzW8AovcFzst/fifQt59sEoBPKZu/Y3hdQohLbnSnBSctdVHUcOJo8qDS8smhWq8ihVhOcDCsiIY1SQkMk2qAhqMlPlxmgaPmmWJ3b5k7fGGWtxtnvtK7sTcm5c2yMKUI1McFo4RvMVKJMzfl3bIgtFx+f19f3Y+r1vaKQZImU1VxZGYXfg7Iu6ek/gKICtGOmDhpLvp8888TzbDO3N54X7pKqLad8ktBLWqqEo0MbGaQNBSqijMoOyXSp+VjjA0q9RDbVJo2JMCxnYRCisKTMNGjjmq3AKu9Gs0kTDw/7WS+06xD9kYJ0g/HyV7+LYOj55LNwTVtyqAcACdnso1gxF+URvvqezDTtGR5XO/xjKRcoMitkEx0LposSBVPPbYXBr/pBvNT+grOIA8zWNBs+AC2YvecjDwvT9OctKyR3zpeObKbjV4+neim3LUs9+NRO0biaCIXvMNdO6NCl8PqXCBTUIeyBbu+FLqxbZN6kcrxLgENIxhscQZfLVJ8xAOPBe1pSrtaGQrofdY1Ef9r8M8jpirJflZ87ARaRyi6CXciZRL7uVBPdwmM6YRbTpcIKgsVq/K3e2GJI6uCGAM=",
+            "page_age": null,
+            "title": "HTAN Phase 2 Data Model \u2014 HTAN Phase 2 Data Model 0.1.0 documentation",
+            "type": "web_search_result",
+            "url": "https://htan2-data-model.readthedocs.io/en/main/"
+          },
+          {
+            "encrypted_content": "EvMBCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDEEyMhRSc5fR+26v9hoMvX7qNr38riHF6oWyIjCkwkp0n14S2oovCFbO1i9AqeLATwGw8LTLg4cp1gbKYz643zd7DwlJj/ia356hoR0qdwyL0DPRaC8XUzdkDzrdwPQZGpf8150n4Lki+0U7xmAYZ+e9zEg18NNwLtuJtElb7/C1gBdeGznc9FD95rbLceOeEQaFTiVx1ugURqO8HhKux6xKNmeWEpZTzg7fuQI11k+OCO0CBSxG+z01/xtBvlNRD7UxFX1zGAM=",
+            "page_age": null,
+            "title": "GitHub - ncihtan/htan-portal: The HTAN Data Portal \u00b7 GitHub",
+            "type": "web_search_result",
+            "url": "https://github.com/ncihtan/htan-portal"
+          },
+          {
+            "encrypted_content": "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",
+            "page_age": null,
+            "title": "Sharing Data from the Human Tumor Atlas Network through",
+            "type": "web_search_result",
+            "url": "https://www.biorxiv.org/content/10.1101/2024.06.25.598921v1.full.pdf"
+          },
+          {
+            "encrypted_content": "EoACCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDDQxYeEXhVlWO/SPSBoMDeHgmpTG1CNIUrElIjCrkGkDc2b9TBwZqW8EtyP0Kt3wvfbSgmuvzsO9DwXwjGc1swd/+NJ+lWBWChG0wXsqgwHNQlu1ThhcLtJrj2oJBEZ6wG+yH+/JCs4Aqrnzv6Nsiwe/ZuO5VZVxZMhSN3qcO9MqM0ivRtdnLYGzIKOpjI4uc/QcnVjZBxoqifwJ/z+Zz7I0oRiDtLEJuqOuJA9I/BPd1EvtzGRTDcbFrdhRHzOk6P889ZLOZk6WqzakBoHDuTigMxgD",
+            "page_age": null,
+            "title": "GitHub - ncihtan/HTAN-data-curator: HTAN Data Ingest Shiny App",
+            "type": "web_search_result",
+            "url": "https://github.com/ncihtan/HTAN-data-curator"
+          },
+          {
+            "encrypted_content": "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",
+            "page_age": "April 1, 2023",
+            "title": "Human Tumor Atlas Network - Data Schemas \u00b7 Issue #101 \u00b7 cBioPortal/GSoC",
+            "type": "web_search_result",
+            "url": "https://github.com/cBioPortal/GSoC/issues/101"
+          },
+          {
+            "encrypted_content": "EvcKCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDEC3iO3R8aogFkNhlBoMzREBx+Kf1H0cN8c2IjBnN8C/8h75GpCIf0b9Y5YI/jwa/KlZ1n9/QoKMXZ+siwTe+eZgruPP9wLdlQhEop8q+glksF7ycbeUkWnrSJlGhTFyC1Kan63+Je4fUNUQDSAja0fmdzbhplChht/8CNP2wRIvl9hb3c/elH7ZbC9bNDfJXy4028HcUeho43wbl6VqmrnB2mtAnTSIAM7Edr18vRfXlz95+6xnNeQSw6iPaw2Zz7t2JmQkdpDGGrGfHch+uGs/DDMOInXmlUcFM8EXXOLVt993/HlvJDdDJw4r5gPuymZys4fRtiVoTKcaVJB2SYAzTLppOzzPuyB1yuFI1ZhAk2QFe++FW1NlI3l4CueiV0bAfbYSTYEzgXe9wT+PE3Bgmt1/vkj5+FEvJ7h71scVTWEG65IA/stwc3qVDqvEtIr3EIOq0iqGpMEpN88d7eJcDEjB0JGr//XvjdYeBq+sr8rPRVbYTBiL6+l8kuevznV++RmXjUCh1eTwWkvJPB72EPdl02sArvVkGdfihZb9yfaiJYCX+IYv72DjXWMPI3+CpIXK2D7zmgoNUjhJyUra+5UFO1ijLKMnlwi19oY44tVu466Wa0Prw8ODyBgVX4iXWgqhHQQ/l6qdyq93wo4Qn3RK9TKz0tFl3mQKWOvLjBfXwbtT1s7n5+pFrN13YLcVZ8xgLOcRBTzltjuktJP1luWJDzVxgCxVfkW26qDQrzLdE3QP4g95Rd7R8lxC/dUvxjlUPxo4h3tmcyh046OHFzh1hC7GZ+Vz/q3FRnht58Hc4L+6c0EM52HGyDmyv4Umfl3VcJR6VRB2n6rdYjU6etONEtss9ZLNljV5kJ13tctyxl7LaeC6Fkd51GKbn6FGZ0P9WDQYpKoo81EnD+LZtfFOi77PqGpv0SQVjPiG6Lsgg0FfjIDM/RWPa9t8V2xNOPdj6pur882Xegl/0Xv0mIjv7B2lyhjTeYf1+oTgctPsNkuZTbc883wtF1isJsPkwwaJbvllknNXhpGsGH/tqbX2nOrSb3jx2+FDSoHErNlkhFgyb9ahXQzUUQyjKjHfJ5m6n+kssmGN5SrbSO0O+X2/EmjDKe+caiYhs+Paprxa+AwhUIWwlDUhVMZ/m8LPCEqN8moXtsgDZpDnOcrGQq13j84izBrV7vFT9VCLrVP3D9uGCdlCWFUPc/gRv79yAIWWdTgbO+z6grvq0YrtnraRvv+95bC8XerZQ+tCPH+2i6dnl+KJ3NAUSpSaIjL8JdQypv3L8kAczKB59aMSF9GPiMy4hF0aK3c8pLiABSb+VmYIhv9sRtuIlotmBtJaKdwXAYNz/HVzTKvBcR679nmdWXdphNgIdTtKwKkFfnQoDDfcAJrscbieEJVGSSZZ7BEggd10+c41fLObCERddO49mp6qMTW6wTZDtb1+UhSdUMz5wgxc1OepCGLYzEWAWO8knRokyrLN84Gq+ol8D8SlmhON0H86pwiN/m+CMz2K5O6J8gglu3eZZ4quka0YcDB/JszBOOxk4F/22/8gbc6xs60de4Bpwd7AcpY+bng+o1Z/TIm8dkQlPyBZmLKMaod7q0f1OljXYjJoEVDSfAYp/mDmeYVwef597U3pVcdQXr97PtDtdwU2fy4vkenzDrt5JN/ebnuDHcM/Nm+asDRnzyJjSHx+ypBN9yA+zlsmXT3WE5GysoFAML+uU3JHugLIPaGYAMx3RKsNSFJqifKSClC9eEi5mkGIGFeu89EQWdI2XHRf8oeIFYaAQFsDcZgX/blCpxgD",
+            "page_age": null,
+            "title": "HTAN Data Standards",
+            "type": "web_search_result",
+            "url": "https://humantumoratlas.org/standards"
+          },
+          {
+            "encrypted_content": "EuUBCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDOa6URRthacqVfa7SxoMvKuOJ21uGAzrK21YIjDPpgSgmBseS8gXeCA8jInxzVCYMWjKXOcwOcLfFXMTgdDXpNHVbzryONVTZHNZLRcqaTj0aawX6elx+tO8JKvdH4YIKOiWEB/Z323pmEptgn542bly8YEXXWjmh7ctgGcs+U9XqJ5RT/ujEBIfxKnFJyeCuBNs275qxBV9MZvqYQvWXiR2XAf62IziCfk7GOu4BPs4kgufZOTPAxgD",
+            "page_age": null,
+            "title": "GitHub - ncihtan/htan2_project_setup",
+            "type": "web_search_result",
+            "url": "https://github.com/ncihtan/htan2_project_setup"
+          }
+        ],
+        "tool_use_id": "srvtoolu_01M5RkqbFSQgxvfbsYD45htz",
+        "type": "web_search_tool_result"
+      },
+      {
+        "caller": {
+          "type": "direct"
+        },
+        "content": [
+          {
+            "encrypted_content": "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",
+            "page_age": null,
+            "title": "GitHub - nf-osi/nf-metadata-dictionary: Versioned releases of the NF metadata dictionary.",
+            "type": "web_search_result",
+            "url": "https://github.com/nf-osi/nf-metadata-dictionary"
+          },
+          {
+            "encrypted_content": "ErcDCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDDw7cnEv4REJQlrjrBoM6vM867DqYi2p1noAIjBsgAjohAPuEbrekCARKSRYDyWSfTSV1QCGHoCF8/1gagZ4KIz9xFtoMC0ps9bnezAqugJysMe1xWLWTZx4p26gT057fvaTyV1xOm+//StwqGWBDMFWwxZY07b9jZ0V5BohLo5CR4nxRc+SP+t/wITbCu7U6Rrr2YifoL/iwc3qyM+77ivg2VXKPYxzZp/ED1VQV8FSVoKhWy7DVoamZJra0gEd5m1c/7dRLokFzXS46dbSgPSSRooW8XjzkEtHRM/U6bFQ4s5moPARO3iqovmDVd5At9QpUUM01UIoeE3NNK4Z4tTODDbjYAAZdnK5iykkoj5CoOKmQiMoEJ8wWt/bmtCMktAll8Wjz188JX8Zu2wnZSdsTsuZ8iV0WqEcfKaT+lkyLIWZYWYAgnmY9kQbr+LNB/0UwII4AWGj8T/3OlqlETW/keXgcFN1MtUhcQCI9rk52RJDBG0H0a7JtUADHTnT0eiyX9e9mW+6QRgD",
+            "page_age": "April 1, 2025",
+            "title": "NF Metadata Dictionary",
+            "type": "web_search_result",
+            "url": "https://nf-osi.github.io/nf-metadata-dictionary/"
+          },
+          {
+            "encrypted_content": "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",
+            "page_age": null,
+            "title": "nf-metadata-dictionary/NF.jsonld at main \u00b7 nf-osi/nf-metadata-dictionary",
+            "type": "web_search_result",
+            "url": "https://github.com/nf-osi/nf-metadata-dictionary/blob/main/NF.jsonld"
+          },
+          {
+            "encrypted_content": "ErEKCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDM2Hf2aiBMcjH64MnhoMAjeM9sCpbotP+fWeIjD2lH8dsQU1wb1xoU+xFAKmlyzf9Sm1Tned9rpJzi/J8tw3Kp8jnDxLj2xk29SL1K8qtAlNqnKjs4sLhIVcMvGw7c7Tbbdod/lXhJBC6/X0fKk29I2+yP9mcGLvmQ5fB7Y+zb3noR/ZPUV9A/EPAYLR6O6ASKPgx/wrGqUeVpFLfIFGhEjjUJccmnLwlMycwE0qHf1T6EQWTUixTJ7OMtdaHWaJFK//gOQmoxhjzTrneRjBz/FdtsSqVj3ELwt589yL1DmYgIRp37i/7d0Kj9KGUDt+m+PQSfMJbD+8qwBau1HCJ8Nl/rFzc1L/Vq35j6HwKrbvcGZ4Y1jGoHqRnr3kfoxlIwXYRRoBBqTO54ThVP+bueX0mxiQnVoJHgONndGcoMvKMOxfYBbnkw5os7AfeypQG4od7DcK30Bau0wlEOO4/FBSX6PRHeXGrWYCLwzbIQtN2cbx0mqCNTnZpYNpHS+8x5vKRLd6P5LVCAv9rP9NI1qx7IPljQluNxT5MpFP6rD++69yNzWFON/iOUnDU+cJn4gMxByOpRz0zYgbWGK8zGehZBMgN9vod1XfSu9bw2bVg+RgmGacJOeiU8iIiH1EErOTPq18hCdnJmnsaQ800CrMzdCVyVwnEmQQ+Lzlt4heOuXf2zLVbQo2I6ujf9CDyI+xMOGIGwuG/FuPPuSuyEO95t91bftdCLWYEiIu9Ze8l0HYA9MjUSLdvdkUL9PmGd/wBfG72oeUZnRcLqOXjBBvwvIugfCAQpAID5YJV+/PVoOEtrXXp3UnpT5M90WivxpgSesRAQ23o9+JPDQuK7edaqGrdo6CsGe8032i4eolQolvRZDMHehVEWrMgfDEmYq9DQp1WTWZsqVcGjic3UA0V2JYoaGlwF5UZ7uta64QS7QG1GSRLAhpSGvJ9zzKF9JNtkIC4ZQRZrkxXma5HMXyeVoEGkGVovyW85DFMNkCoObTkvNHNs5dIOLbrnw0M6wPfKy4O0UfdsvH3HdVVeF0wicUJK4qk22910lbzskAKYxHAIRrMb5DFxNvYvrD6KAvTXRegVBaFqnONAxSyTYXpgnuDAEKeTMRBlzR3gAKI6FC9aOVqDD5Yx3wZMpgyBRqcOizX9MHmlQiU5ACMHojJ9r5hjcHPqAjukGhZra0caVLO6muZkYCHWjrZDBuatOjS2Z3sTAgh3rJDa6EznyIpN5bVX/7JLMdslz05cnuzscr3cW/X1gemqPPhYp2JsjuNpPjl6aQV8gMptKOa6uWygzQRefGzT1Jrw9LZqMi1pnEpbiwjSTuF/NYCGDGLue75aSsLxIWa7obVhrqGmFh/nzMs5/xgngaboh0rJzzCQw/EGkdigKNg9jKeEAU0BmRXbg3e+Bnqg7oW6k4oZ3b+aWq94JCK2/xpq4BsOorWPlE76KlkHHE1c5bwNMBNDdGoYzlv6uXjawzuHrbw4OiM+Q8gD805+NOgT1pZavvfOk1JiyFfCsyIa+SV2E2517bUPgzKgpDBHAeXw1N9NGSE3QOug0aKznS/GzE4jydSKVplubsKuJHaOLWziqc6V7HUoH2p/8iuiX4djSZ+3P6u4Wf8yPXGHOjpCfn0PAZTIHqR20pOxt0f0S7gU1hKRPONtPdmOAFPLHJO6tnMH7U50k4VC3rqpBdiqXQe077qqawGAM=",
+            "page_age": null,
+            "title": "nf-osi \u00b7 GitHub",
+            "type": "web_search_result",
+            "url": "https://github.com/nf-osi"
+          },
+          {
+            "encrypted_content": "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",
+            "page_age": null,
+            "title": "GitHub - nf-osi/nf-research-tools-schema",
+            "type": "web_search_result",
+            "url": "https://github.com/nf-osi/nf-research-tools-schema"
+          },
+          {
+            "encrypted_content": "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",
+            "page_age": "May 20, 2025",
+            "title": "nf-osi/nf-metadata-dictionary: v10.01.00",
+            "type": "web_search_result",
+            "url": "https://zenodo.org/records/15475808"
+          },
+          {
+            "encrypted_content": "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",
+            "page_age": "March 19, 2025",
+            "title": "nf-osi/nf-metadata-dictionary: v9.14.0",
+            "type": "web_search_result",
+            "url": "https://zenodo.org/records/15052136"
+          },
+          {
+            "encrypted_content": "EpsICioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDAmqNhmpYWi4ehEiyRoMBqhq59Guncmg+bdMIjDmf4p4rz1iHxkLRulwlyvMyKWmw1LN8vOIh3cHc0mVB4MdA9UuaYS25ENdux6+fUMqngfUPmnjY2pfcE1PYAGmLghDXN54UFv3U7RISEkDfYWrXuEJzdnQZHE2j86l6kUGn4mvd8cvxIL1sYk3V3QG0ewwOd17Scmm2dTbkBDViGWClZZcJG7DroTfJ+qdES9Zz81ICtuquGZqx9GXif1ejQyciXEJMvnzmfbbktaV3C4lZao9WHEpT3THA3kEB+5mZHF4gQyBAKUhM5Tn512K01HqRS9F8dDLkKNkDwYc5Fw/UJ2HBEf9P8uGVfq5mekz5PH4N4Rjhfk8IzRWLqWZbhjhU7v4FJjDWMRl4VVlWb4P8eNwPtl+5FYyj98hEp3KYBFtB9rS6Irm3pwnkhFF8AQUoYUM3igU5ub6c2tAOr8O7gCkqn8eTk4vd7H3/uc4td/Vz/J5lAXsqx1OpojzEBS3GLmS8x9YQhOwsCg4usX3vYEcjJxI6DHrdgdkBiMoOAPGjHwoDJfPFrAIn3CRgkWXsly06rig7+0F2a1PARYtd+wNTzKTXKwJJkSDhhr+YkKk9c5MVt9TOqavSoUHbJPZmfrTzaBBervdTg7l1fA5vzEK3PeKMvzUWeyd9sSFkfxdAC3fC7BFiamevyyb6qez0qsUj9th/ybhmQ1ur8YWfVqTZoFzBJ+iICWWuv5dttbg/k2oQXsujSOFy6lA4CVQ5r8ylrD551XlukbxfTX8Pvk+niUVVvox7CtB83BkW12bYcKTxINeUzHyR8O50559ohFsNak6ZnFg/3QUl7+Fx4WOWxPQnCMwD8S8dI0vd7R9F9p8HcTiixfqQnfRxByAyY4WIWtft5CMXJ5pleSD545ce6WhmWo22TeYYsMPVzmXKCAK5f5vDt3ADJmP87khdsnMgj56RPaGjtAbFeKrA0LHMbCF9I9TBB8ozw6GJbeZLku+p6oa3nXczMMcFxbjwZpgqja8KX+0LkY0Vx+X3NSzbPDcm3VVy5tSRmvxK6bmzUDuu8xd/YPNtRW+r6g28UoaiZxwLF9hncAgAMrKA/mM1bxKaFR3ZuSKhazusVwNW1o8to8whA77B70eIdOsQClIqZUzHB6MAbQ7JlK10qxcGOxj3wJyuo27zlbtTLFs2+8os2oq7p/s/Nr9Oiz7b+/WmY/briQ2EL9ki3aoiwqarf9PkEA+K4gevz6eQuRXuW7KJN+0D5kLaLHxhGtzw9fqc4J9p9nvqRBHHCHALY7get9lBjVFY1YKgbZD6I0w3ZkdaCMkQd9kLUBJkhgD",
+            "page_age": null,
+            "title": "Metadata",
+            "type": "web_search_result",
+            "url": "https://help.nf.synapse.org/NFdocs/metadata"
+          },
+          {
+            "encrypted_content": "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",
+            "page_age": null,
+            "title": "GitHub - nf-osi/NF_data_curator: Data Ingest Shiny App",
+            "type": "web_search_result",
+            "url": "https://github.com/nf-osi/NF_data_curator"
+          },
+          {
+            "encrypted_content": "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",
+            "page_age": null,
+            "title": "GitHub - BD2KGenomics/dcc-metadata-indexer: Scripts and schemas for JSON documents used with the DCC storage system and for building Elasticsearch indexes",
+            "type": "web_search_result",
+            "url": "https://github.com/BD2KGenomics/dcc-metadata-indexer"
+          }
+        ],
+        "tool_use_id": "srvtoolu_01W8s37bAxcJsjeJapdHy92u",
+        "type": "web_search_tool_result"
+      },
+      {
+        "citations": null,
+        "text": "Based on my research, I can now provide you with an analysis. Let me summarize what I've found:\n\n## Analysis\n\nI was unable to directly access the JSON schema files from the specified repositories due to access restrictions. However, based on my research of the available documentation and schema descriptions, I can provide the following assessment:\n\n**The sample data contains fields that are characteristic of a Biospecimen schema:**\n\n- `individualID` - identifier for the individual/participant\n- `specimenID` - identifier for the specimen/biospecimen  \n- `aliquotID` - identifier for an aliquot (subdivision of a specimen)\n- `bodySite` - anatomical location where the specimen was collected\n\n### Findings:\n\n**HTAN (htan2-data-model):** ",
+        "type": "text"
+      },
+      {
+        "citations": [
+          {
+            "cited_text": "Contribute to ncihtan/htan-portal development by creating an account on GitHub.",
+            "encrypted_index": "EpABCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDCYWFjPavzcRvCl9rhoM9MPuUZRB72ngkpvdIjDr5xsk+MuDZYq8h/4ZPHp+53tjPh4P9imihzwo5iEwz9Y35uJ5AB/SLWJkZPio9vAqFFHiZtUWu79Y9BtvtLjWQgwGhrn5GAQ=",
+            "title": "GitHub - ncihtan/htan-portal: The HTAN Data Portal \u00b7 GitHub",
+            "type": "web_search_result_location",
+            "url": "https://github.com/ncihtan/htan-portal"
+          }
+        ],
+        "text": "The HTAN Biospecimen schema includes fields like \"Component, HTAN Biospecimen ID, Source HTAN Biospecimen ID, HTAN Parent ID\"",
+        "type": "text"
+      },
+      {
+        "citations": null,
+        "text": " and other biospecimen-related attributes. However, the HTAN model uses different field naming conventions (e.g., \"HTAN Biospecimen ID\" rather than \"specimenID\").\n\n**NF Metadata Dictionary (nf-osi/nf-metadata-dictionary):** ",
+        "type": "text"
+      },
+      {
+        "citations": [
+          {
+            "cited_text": "GTEx sample IDs are structured identifiers assigned by the GTEx Data Coordinating Center to uniquely label and trace biospecimens from donors through ...",
+            "encrypted_index": "EpABCioIDxgCIiQ1OGFkYzU4Ni0wOWEyLTRlMTUtYWVhZS04N2VkMzE4ZjM0NmUSDKTmSfIhh+bLlj4p6BoMSU/3qeOYp2wbmxXvIjC/mlwPeaaZVwnG3ChvI8aFHiWMGJ8ULo5SapmtyF8Y5gdwrfEBVJ7NVw6wg6GTzOAqFINudwXBMsd+5yQr55SXNHwwEVHtGAQ=",
+            "title": "ClarID: A Human-Readable and Compact Identifier Specification for Biomedical Metadata Integration - PMC",
+            "type": "web_search_result_location",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12424912/"
+          }
+        ],
+        "text": "The NF metadata dictionary indicates that \"specimenID is required, and is included for assay data class definitions that involve a specimen.\"",
+        "type": "text"
+      },
+      {
+        "citations": null,
+        "text": " The NF dictionary uses LinkML-based schemas that compile to JSON-LD and JSON Schema formats.\n\n### Conclusion:\n\n**I cannot definitively identify which schema matches this sample** because:\n\n1. I could not access the actual JSON schema files from either repository to verify the exact field names and structure\n2. The field names in your sample (`individualID`, `specimenID`, `aliquotID`, `bodySite`) appear to be more consistent with the **NF Metadata Dictionary** conventions based on the documentation I found\n3. The HTAN model appears to use different naming conventions (HTAN-specific identifiers)\n\n**Recommendation:** To properly identify the schema, you would need to:\n- Access the actual JSON schema files directly from the repositories\n- Check the `registered-json-schemas` directory in the nf-osi repository\n- Check the `JSON_Schemas/v1.1.0` directory in the htan2-data-model repository",
+        "type": "text"
+      }
+    ],
+    "model": "claude-haiku-4-5-20251001",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 242
+      },
+      "cache_creation_input_tokens": 17155,
+      "cache_read_input_tokens": 149437,
+      "inference_geo": "not_available",
+      "input_tokens": 21,
+      "output_tokens": 852,
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 5
+      },
+      "service_tier": "standard"
+    }
+  },
+  "error": null
+}

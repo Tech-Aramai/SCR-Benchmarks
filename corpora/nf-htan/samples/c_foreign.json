@@ -1,0 +1,15 @@
+{
+  "id": "c-foreign-financial",
+  "type": "foreign",
+  "payload": {
+    "transactionId": "txn_abc123",
+    "amount": 149.99,
+    "currency": "USD",
+    "merchantId": "merch_xyz",
+    "settledAt": "2026-04-28T10:00:00Z"
+  },
+  "expected": {
+    "behavior": "decline",
+    "candidate_schemas": []
+  }
+}

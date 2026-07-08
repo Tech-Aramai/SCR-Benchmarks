@@ -1,0 +1,43 @@
+# Corpus: NF-OSI + HTAN2 biomedical JSON Schemas
+#
+# Everything corpus-specific lives here. Global matrix defaults (models, reps,
+# variants, temperature, max_tokens, grader_model, sample_types) come from the
+# repo-root config.yaml; any of them may be overridden in this file.
+#
+# Layout convention (all paths relative to this corpus directory):
+#   samples/            input samples + their `expected` grading blocks
+#   schemas-zip/*.zip   pinned schema snapshots for the zip variant
+#   fixtures/zip/       extracted snapshots (gitignored; regenerate from schemas-zip)
+#   results/            runs.jsonl, runs.csv, raw/, plots/ (committed)
+
+name: nf-htan
+description: NF-OSI + HTAN2 biomedical JSON Schemas
+
+# Short phrase naming the schema universe in scope. The grader uses this when
+# deciding whether a predicted schema is a hallucination (outside the universe).
+universe_description: NF-OSI + HTAN2
+
+# Where each retrieval variant finds the schemas for this corpus.
+sources:
+  # url variant: public repositories, listed in the model's prompt.
+  url:
+    - https://github.com/ncihtan/htan2-data-model/tree/main/JSON_Schemas/v1.1.0
+    - https://github.com/nf-osi/nf-metadata-dictionary/tree/main/registered-json-schemas
+  # zip variant: subdirectories under this corpus's fixtures/zip/, with a human
+  # label each. `dir` must match the folder created when schemas-zip/*.zip is
+  # extracted (see README).
+  zip:
+    - dir: ncihtan_htan2-data-model
+      label: HTAN2 v1.1.0 JSON Schemas
+    - dir: nf-osi_nf-metadata-dictionary
+      label: NF-OSI registered JSON schemas
+  # mcp variant: the CoreModels project that has this corpus loaded. Not a
+  # secret (it is an identifier); the server URL + bearer token stay in .env.
+  mcp:
+    project_id: 9c7a4b51b13440fca6ba4f840ebca21c
+
+# Optional per-corpus overrides of the global matrix, e.g.:
+# reps_per_model: 5
+# models:
+#   - id: opus-4-7
+#     alias: claude-opus-4-7
