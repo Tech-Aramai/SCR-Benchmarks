@@ -1,0 +1,37 @@
+SCR Benchmark Harness (scr-bench)
+Copyright 2026 Hexagon Holdings LLC
+
+This product is developed and maintained by Hexagon Holdings LLC as part of
+the Schematica open-source ecosystem (https://aramai.io/schematica).
+
+Licensed under the Apache License, Version 2.0. See the LICENSE file for the
+full terms.
+
+------------------------------------------------------------------------------
+Third-party schema collections
+------------------------------------------------------------------------------
+
+This repository redistributes pinned snapshots of the following third-party
+JSON Schema collections under corpora/*/schemas-zip/, solely as fixtures for
+reproducing the benchmark. These collections are the property of their
+respective projects and are NOT covered by the Apache-2.0 license above.
+Each remains subject to the terms of its upstream source.
+
+1. NF-OSI metadata dictionary (registered JSON schemas)
+   Source: https://github.com/nf-osi/nf-metadata-dictionary
+   Terms:  The collection of metadata terms is made available by NF-OSI under
+           a CC0 1.0 public-domain dedication. Individual terms and their
+           definitions may be subject to other permissive licenses; consult
+           the source for each term.
+
+2. HTAN2 data model (JSON Schemas, v1.1.0)
+   Source: https://github.com/ncihtan/htan2-data-model
+   Terms:  The upstream repository does not currently declare an explicit
+           license. These schemas are public artifacts of the Human Tumor
+           Atlas Network (HTAN), an NCI-funded program. They are redistributed
+           here for benchmark reproducibility only, with attribution to HTAN.
+           No ownership is claimed. This snapshot will be removed or replaced
+           on request of the upstream maintainers.
+
+For any use beyond reproducing this benchmark, obtain the schemas from their
+upstream sources and observe the upstream terms.

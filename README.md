@@ -149,3 +149,20 @@ src/scr_bench/
 Token counts are summed across **every** turn of a run (including the MCP
 server-side loop and the client-side tool loops). Cached input tokens are
 reported separately for transparency.
+
+## License
+
+This project is licensed under the **Apache License 2.0** — see [LICENSE](LICENSE).
+Apache-2.0 includes an express patent grant and patent-retaliation clause; it is
+the standard license across the Schematica open-source ecosystem.
+
+Copyright 2026 Hexagon Holdings LLC.
+
+### Third-party data
+
+The schema snapshots under `corpora/*/schemas-zip/` are redistributed from their
+upstream projects for benchmark reproducibility and are **not** covered by the
+Apache-2.0 license above. See [NOTICE](NOTICE) for details.
+
+- **NF-OSI** ([`nf-osi/nf-metadata-dictionary`](https://github.com/nf-osi/nf-metadata-dictionary)) — collection under CC0.
+- **HTAN2** ([`ncihtan/htan2-data-model`](https://github.com/ncihtan/htan2-data-model)) — public HTAN artifact, redistributed with attribution; no upstream license declared.
