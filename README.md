@@ -165,4 +165,4 @@ upstream projects for benchmark reproducibility and are **not** covered by the
 Apache-2.0 license above. See [NOTICE](NOTICE) for details.
 
 - **NF-OSI** ([`nf-osi/nf-metadata-dictionary`](https://github.com/nf-osi/nf-metadata-dictionary)) — collection under CC0.
-- **HTAN2** ([`ncihtan/htan2-data-model`](https://github.com/ncihtan/htan2-data-model)) — public HTAN artifact, redistributed with attribution; no upstream license declared.
+- **HTAN2** ([`ncihtan/htan2-data-model`](https://github.com/ncihtan/htan2-data-model)) — MIT License, © 2024 Adam Taylor.
