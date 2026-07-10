@@ -53,7 +53,7 @@ Mean `total_tokens` on **correct** runs, per `(model, variant, sample_type)`. Pl
 |---|---:|---:|---:|---:|
 | exact | 2,789 | 25,619 | 43,783 | 9–16× |
 | ambiguous | 2,693 | 17,736 | 30,601 | 7–11× |
-| foreign | 1,697 | 11,848 | 15,130 | 7–9× |
+| foreign | 1,697 | 15,130 | 11,848 | 7–9× |
 | chimeric | 5,250 | 25,075 | 25,062 | ~5× |
 
 ### Haiku 4.5 (n varies — only correct runs counted; see correctness section below)
@@ -88,11 +88,14 @@ Plot: [results/plots/correctness_by_model.png](results/plots/correctness_by_mode
 
 ### Hallucinations
 
-- **Opus 4.7**: 0 hallucinations across all 36 runs. The "URL/ZIP confabulate" failure mode the benchmark predicted did not materialize at this tier.
-- **Haiku 4.5**: 5 hallucinations — mcp(2) + url(2) + zip(0). **The predicted failure modes appeared:**
-  - URL Haiku ambiguous **0/3** — pattern-matched on shared identifier fields and committed to wrong assay templates instead of using `bodySite`. This is exactly the failure mode the benchmark was designed to catch.
-  - URL Haiku exact 1/3 — confabulated schema names on 2 reps (predicted "confabulate / pick wrong" mode).
-  - URL Haiku chimeric 1/3 — silently committed to one schema and dropped conflicting fields on 2 reps (predicted "drop conflicting fields" mode).
+- **Opus 4.7**: **0 hallucinations** across all 36 runs. The predicted "URL/ZIP confabulate" failure mode did not materialize at this tier.
+- **Haiku 4.5**: **4 hallucinations** — mcp(2) + url(2) + zip(0). All four land on the two hardest samples (ambiguous, chimeric); on `exact` and `foreign`, Haiku never confabulated.
+  - **mcp — 2**, both by *fabricating or mis-citing a schema name while narrowing / flagging* (not by wrongly committing):
+    - *ambiguous* rep1 — over-narrowed to two candidates and **invented a schema that doesn't exist** (`"biospecimen 21 23"`), without citing `bodySite`.
+    - *chimeric* rep1 — flagged inconsistency but **cited the wrong second schema** (`nf-platebasedreporterassaytemplate` instead of HTAN BiospecimenData).
+  - **url — 2**, both on *chimeric* (rep1, rep3) — **committed to `HTAN BiospecimenData`** and ignored the NF/HTAN field mix instead of flagging it.
+  - **url `exact` and `ambiguous` failures were NOT hallucinations.** Those 5 runs were *appropriate abstentions* (`decline` / `narrow` / `flag_inconsistency`, `hallucinated=false`, no fabricated schema) — Haiku got them wrong by **under-claiming**, not by making something up. In particular, the predicted "pattern-match and commit to a `wrong_but_tempting` assay template" mode **did not appear even on Haiku** — url over-abstained rather than picking a tempting wrong schema.
+  - **zip — 0.** Its chimeric failures were turn-exhaustion, not hallucination (below).
 
 ### ⚠️ ZIP + Haiku + chimeric: abstention by exhaustion
 
@@ -131,6 +134,11 @@ ZIP shows tight cost stability on most samples (disk scans of the same files pro
 
 ## Per-sample observations
 
+> Counts in this section are **Opus 4.7 (frontier tier)** — 9 runs per sample
+> (3 variants × 3 reps), which is why they read 9/9 with 0 hallucinations. The
+> Haiku-tier failures (including the 4 hallucinations) are covered in the
+> Hallucination section above.
+
 ### Sample (a) exact — `BiospecimenTemplate` with all five identifying fields
 - 9/9 correct. 0 hallucinations.
 - MCP rep 1 paid the cache miss (`input_tokens=2392`); reps 2–3 were 8 input tokens because the system prompt cached and the work happened MCP-server-side.
@@ -148,7 +156,7 @@ ZIP shows tight cost stability on most samples (disk scans of the same files pro
 - Every grader note independently calls out the same failure mode that didn't happen ("financial fields have no analog in biomedical schemas"), confirming the model's reasoning was sound, not hand-wavy.
 
 ### Sample (d) chimeric — NF camelCase + HTAN SCREAMING_SNAKE in one payload
-- 9/9 correctly flagged inconsistency. **0 hallucinations.** No variant silently committed to one schema and dropped conflicting fields.
+- **On Opus 4.7:** 9/9 correctly flagged inconsistency, **0 hallucinations** — no variant silently committed to one schema. *(On Haiku this was the weakest sample: url committed to `HTAN BiospecimenData` twice and mcp mis-cited the second schema once — see the Hallucination section.)*
 - All three variants identified the same disambiguator: case convention. URL/ZIP reps cite "camelCase NF-OSI fields vs SCREAMING_SNAKE_CASE HTAN fields"; MCP reps cite the same split via node IDs.
 - **MCP cost was the most consistent of any sample**: stdev=91 across three reps. The graph traversal is path-equivalent each time; URL/ZIP fan out differently per run.
 - MCP wall time was longer (avg 263s vs ~50–60s for URL/ZIP) — the API's server-side MCP loop did extra work to confirm the two-registry split.
