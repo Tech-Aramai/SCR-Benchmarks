@@ -89,12 +89,12 @@ Plot: [results/plots/correctness_by_model.png](results/plots/correctness_by_mode
 ### Hallucinations
 
 - **Opus 4.7**: **0 hallucinations** across all 36 runs. The predicted "URL/ZIP confabulate" failure mode did not materialize at this tier.
-- **Haiku 4.5**: **4 hallucinations** — mcp(2) + url(2) + zip(0). All four land on the two hardest samples (ambiguous, chimeric); on `exact` and `foreign`, Haiku never confabulated.
-  - **mcp — 2**, both by *fabricating or mis-citing a schema name while narrowing / flagging* (not by wrongly committing):
-    - *ambiguous* rep1 — over-narrowed to two candidates and **invented a schema that doesn't exist** (`"biospecimen 21 23"`), without citing `bodySite`.
-    - *chimeric* rep1 — flagged inconsistency but **cited the wrong second schema** (`nf-platebasedreporterassaytemplate` instead of HTAN BiospecimenData).
+- **Haiku 4.5**: **3 hallucinations** — mcp(1) + url(2) + zip(0). All three land on the hardest sample, `chimeric`; on `exact`, `foreign`, and (once corrected — see below) `ambiguous`, Haiku did not confabulate.
+  - **mcp — 1**: *chimeric* rep1 — correctly flagged inconsistency but named the **wrong second schema** (`nf-platebasedreporterassaytemplate`, a real NF template, in place of HTAN BiospecimenData).
   - **url — 2**, both on *chimeric* (rep1, rep3) — **committed to `HTAN BiospecimenData`** and ignored the NF/HTAN field mix instead of flagging it.
-  - **url `exact` and `ambiguous` failures were NOT hallucinations.** Those 5 runs were *appropriate abstentions* (`decline` / `narrow` / `flag_inconsistency`, `hallucinated=false`, no fabricated schema) — Haiku got them wrong by **under-claiming**, not by making something up. In particular, the predicted "pattern-match and commit to a `wrong_but_tempting` assay template" mode **did not appear even on Haiku** — url over-abstained rather than picking a tempting wrong schema.
+  - **Not hallucinations (under-claiming or graph noise):**
+    - url `exact` / `ambiguous` (5 runs) — *appropriate abstentions* (`decline` / `narrow` / `flag_inconsistency`, `hallucinated=false`, no fabricated schema). Haiku got them wrong by **under-claiming**, not by making something up; the predicted "commit to a `wrong_but_tempting` assay template" mode did not appear even on Haiku.
+    - mcp `ambiguous` rep1 — **over-narrowing, not fabrication.** It returned a candidate list (`BiospecimenTemplate` + a stray project node that was *temporarily* mis-titled `"biospecimen 21 23"`) instead of committing via `bodySite`. That node was **real graph noise** — a title since reverted in the project — not a model invention, so it is *not* counted as a hallucination. (A genuine SCR signal: stray/mislabeled graph nodes can pull a weak model into over-narrowing — a data-quality issue, not a model one.)
   - **zip — 0.** Its chimeric failures were turn-exhaustion, not hallucination (below).
 
 ### ⚠️ ZIP + Haiku + chimeric: abstention by exhaustion
@@ -136,7 +136,7 @@ ZIP shows tight cost stability on most samples (disk scans of the same files pro
 
 > Counts in this section are **Opus 4.7 (frontier tier)** — 9 runs per sample
 > (3 variants × 3 reps), which is why they read 9/9 with 0 hallucinations. The
-> Haiku-tier failures (including the 4 hallucinations) are covered in the
+> Haiku-tier failures (including the 3 hallucinations) are covered in the
 > Hallucination section above.
 
 ### Sample (a) exact — `BiospecimenTemplate` with all five identifying fields
