@@ -161,6 +161,42 @@ ZIP shows tight cost stability on most samples (disk scans of the same files pro
 - **MCP cost was the most consistent of any sample**: stdev=91 across three reps. The graph traversal is path-equivalent each time; URL/ZIP fan out differently per run.
 - MCP wall time was longer (avg 263s vs ~50–60s for URL/ZIP) — the API's server-side MCP loop did extra work to confirm the two-registry split.
 
+## A4 / refusal (under-determined input) — exploratory, July 2026
+
+> Added July 2026, separate from the April snapshot above and run against the current
+> corpus. A fifth sample type, **`underdetermined`**, is the mirror of sample (b): an
+> input that matches *many* in-scope templates with **no disambiguating field**, where
+> the correct behavior is to **refuse or narrow**, not commit. Committing to a single
+> schema is a false-confidence failure. haiku-4-5, 3 reps/variant, field order shuffled
+> per rep.
+
+**Sample (e) underdetermined** — `{individualID, specimenID, aliquotID}` only. These
+three identifier fields co-occur in **29 of the 93** templates (Biospecimen plus 28
+assay templates); unlike sample (b), no `bodySite` or other disambiguator is present.
+Correct = decline / narrow.
+
+| variant | reps | outcome |
+|---|---|---|
+| **mcp** | 3 | 2 false commit (`BiospecimenTemplate`), 1 correct narrow |
+| **url** | 3 | 3 "correct" (2 decline, 1 narrow) — but by retrieval **starvation** (it could not fetch the raw schema files), not by detecting ambiguity |
+| **zip** | 3 | 2 false commit (`BiospecimenTemplate`), 1 turn-exhaustion error (hit `MAX_TURNS=25`) |
+
+**Read:** on a **large** candidate set (29) in a **flat 93-file** directory, haiku
+rarely refuses correctly. The graph commits to the salient template; exhaustive file
+reading either commits to it too or runs out of turns enumerating. Only url "refused",
+and that was an artifact of failed retrieval rather than ambiguity detection. This is a
+model-calibration + candidate-set-size effect, not a clean surface ranking — contrast
+the **openEHR** corpus, whose under-determined sample has a small candidate set (3) in
+one folder, where exhaustive reading (zip) *does* refuse correctly while the graph
+over-commits.
+
+> **Methodology note — zip sandbox.** The first attempt at these zip runs was invalid:
+> the local `run_bash` sandbox could not find `bash` on PATH, so the model silently fell
+> back to guessing from memory while the harness still recorded an `ok` result. Fixed
+> (Git Bash on PATH); the affected runs were deleted and re-executed with real file
+> access (the numbers above). Hardening the sandbox to error loudly instead of degrading
+> silently is on the list.
+
 ## Methodology notes and caveats
 
 Points that aren't visible in the headline charts but matter for interpreting them.

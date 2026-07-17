@@ -42,6 +42,10 @@ sources:
   mcp:
     project_id: 80215e05a1ba4dd8a37e0a21a2f39605
 
+# Field-order shuffle for the A4 / refusal cells (SA-ISR §8). The benchmarked
+# a/b/c/d cells are already recorded, so this only affects new runs.
+shuffle_field_order: true
+
 # Optional per-corpus overrides of the global matrix, e.g.:
 # reps_per_model: 5
 # models:

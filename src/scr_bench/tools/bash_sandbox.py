@@ -12,9 +12,58 @@ command is timeout-bounded, and destructive verbs / write redirects are rejected
 from __future__ import annotations
 
 import re
+import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
+
+# Known Git-for-Windows install locations, tried when `bash` isn't on PATH.
+# Ordered most-common first.
+_WINDOWS_BASH_FALLBACKS: tuple[str, ...] = (
+    r"C:\Program Files\Git\bin\bash.exe",
+    r"C:\Program Files\Git\usr\bin\bash.exe",
+    r"C:\Program Files (x86)\Git\bin\bash.exe",
+)
+
+_bash_path: str | None = None
+
+
+def _resolve_bash() -> str:
+    """Locate a real bash executable and cache it.
+
+    Raises RuntimeError if none can be found. This is deliberate: if bash is
+    missing, the model's read-only tool calls all fail, and (left unchecked) the
+    model quietly answers the schema-identification task from parametric memory
+    while the harness still records a graded `ok` result — a silent data-integrity
+    failure we hit in July 2026. Failing loudly turns that into a visible
+    `status: error` (or an aborted run) instead of fabricated data.
+    """
+    global _bash_path
+    if _bash_path is not None:
+        return _bash_path
+    found = shutil.which("bash")
+    if found is None:
+        for cand in _WINDOWS_BASH_FALLBACKS:
+            if Path(cand).exists():
+                found = cand
+                break
+    if found is None:
+        raise RuntimeError(
+            "bash executable not found on PATH or in known Git-for-Windows "
+            "locations. The ZIP variant needs a real bash to read the local "
+            "schema files. Install Git (Windows: git-scm.com) or add its bin/ to "
+            "PATH, then re-run. Refusing to proceed so results are not silently "
+            "fabricated from model memory."
+        )
+    _bash_path = found
+    return _bash_path
+
+
+def ensure_available() -> str:
+    """Preflight check: resolve bash now (raising if absent) so a run aborts
+    before spending API calls rather than erroring cell-by-cell. Returns the
+    resolved path."""
+    return _resolve_bash()
 
 # Patterns rejected for every variant. \b is a word boundary so "remove" doesn't
 # match `\brm\b`. `>>?` matches both `>` and `>>` redirects. Backticks are blocked
@@ -69,9 +118,12 @@ def run(
                 exit_code=126,
                 truncated=False,
             )
+    # Resolve bash here (raises if missing) so a broken environment fails loudly
+    # rather than returning an error the model papers over with a memory guess.
+    bash = _resolve_bash()
     try:
         proc = subprocess.run(
-            ["bash", "-c", command],
+            [bash, "-c", command],
             capture_output=True,
             text=True,
             timeout=timeout,
@@ -82,13 +134,6 @@ def run(
             stdout="",
             stderr=f"command exceeded {timeout}s timeout",
             exit_code=124,
-            truncated=False,
-        )
-    except FileNotFoundError as e:
-        return BashResult(
-            stdout="",
-            stderr=f"bash not on PATH: {e}",
-            exit_code=127,
             truncated=False,
         )
 

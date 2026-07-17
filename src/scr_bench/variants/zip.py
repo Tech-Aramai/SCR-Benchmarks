@@ -143,6 +143,9 @@ def run(
             f"ZIP fixtures directory missing: {zip_root.resolve()}. "
             f"Extract {cfg.schemas_zip_dir}/*.zip into {zip_root}/ first (see README)."
         )
+    # Fail loudly now if bash is unavailable, so we don't spend an API call only
+    # for the model to answer from memory when every run_bash errors.
+    bash_sandbox.ensure_available()
 
     prompt = _build_prompt(sample["payload"], cfg)
 
