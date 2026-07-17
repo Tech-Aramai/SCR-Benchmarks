@@ -65,7 +65,7 @@ first (paths are relative to the corpus directory):
 ```bash
 cd corpora/nf-htan
 mkdir -p fixtures/zip/ncihtan_htan2-data-model fixtures/zip/nf-osi_nf-metadata-dictionary
-unzip "schemas-zip/ncihtan htan2-data-model main JSON_Schemas-v1.1.0.zip" \
+unzip "schemas-zip/ncihtan htan2-data-model main JSON_Schemas-v1.2.0.zip" \
   -d fixtures/zip/ncihtan_htan2-data-model
 unzip "schemas-zip/nf-osi nf-metadata-dictionary main registered-json-schemas.zip" \
   -d fixtures/zip/nf-osi_nf-metadata-dictionary

@@ -31,5 +31,7 @@ temperature: 0
 # fixtures/zip/ to be pre-extracted from its schemas-zip/*.zip — see README.
 variants: [mcp, url, zip]
 
-# All four sample types.
-sample_types: [exact, ambiguous, foreign, chimeric]
+# Sample types. `underdetermined` is the A4 / refusal case (ISR < 1.0): input that
+# matches several in-scope schemas with no disambiguator, where the correct answer
+# is to refuse/narrow rather than commit. Only corpora that ship such a sample run it.
+sample_types: [exact, ambiguous, foreign, chimeric, underdetermined]
