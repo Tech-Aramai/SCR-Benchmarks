@@ -48,6 +48,10 @@ class Config:
     temperature: float
     variants: list[str]
     sample_types: list[str]
+    # When true, the input payload's field order is permuted per rep (seed = rep)
+    # and the seed is recorded. Probes order-sensitivity (SA-ISR §8). Default off
+    # so existing runs stay reproducible; enable for A4 / refusal cells.
+    shuffle_field_order: bool
 
     # --- corpus identity ---
     corpus_name: str
@@ -179,6 +183,10 @@ def load_config(
         temperature=float(matrix("temperature")),
         variants=variants,
         sample_types=list(matrix("sample_types")),
+        shuffle_field_order=bool(
+            corpus_cfg.get("shuffle_field_order",
+                           global_cfg.get("shuffle_field_order", False))
+        ),
         corpus_name=str(corpus_cfg.get("name") or corpus),
         corpus_dir=corpus_dir,
         universe_description=universe_description,

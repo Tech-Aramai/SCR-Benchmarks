@@ -27,11 +27,17 @@ max_tokens: 4096
 # to older models. Kept here so the value is captured in run records.
 temperature: 0
 
+# Permute the input payload's field order per rep (seed = rep, recorded per run).
+# Probes model order-sensitivity at constant information content (SA-ISR §8).
+# Default off so already-run cells stay reproducible; enable (here or via a corpus
+# override) for A4 / refusal experiments.
+shuffle_field_order: false
+
 # All three retrieval variants. The ZIP variant requires the corpus's
 # fixtures/zip/ to be pre-extracted from its schemas-zip/*.zip — see README.
 variants: [mcp, url, zip]
 
-# Sample types. `underdetermined` is the A4 / refusal case (ISR < 1.0): input that
+# Sample types. `underdetermined` is the A4 / refusal case (SA-ISR < 1.0): input that
 # matches several in-scope schemas with no disambiguator, where the correct answer
 # is to refuse/narrow rather than commit. Only corpora that ship such a sample run it.
 sample_types: [exact, ambiguous, foreign, chimeric, underdetermined]

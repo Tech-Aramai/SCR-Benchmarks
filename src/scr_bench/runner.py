@@ -5,6 +5,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import logging
+import random
 import traceback
 from pathlib import Path
 from typing import Any, Callable
@@ -31,6 +32,18 @@ VARIANT_RUNNERS: dict[str, Callable[..., dict[str, Any]]] = {
     "url": url_variant.run,
     "zip": zip_variant.run,
 }
+
+
+def _shuffle_payload(payload: Any, seed: int) -> Any:
+    """Return a copy of a dict payload with its top-level keys permuted
+    deterministically by `seed`. LLMs are order-sensitive (SA-ISR §8), so shuffling
+    across reps probes whether behaviour is stable at constant information content.
+    Non-dicts (or fewer than 2 keys) are returned unchanged."""
+    if not isinstance(payload, dict) or len(payload) < 2:
+        return payload
+    keys = list(payload.keys())
+    random.Random(seed).shuffle(keys)
+    return {k: payload[k] for k in keys}
 
 
 def load_samples(samples_dir: Path, sample_types: list[str]) -> list[dict[str, Any]]:
@@ -74,6 +87,13 @@ def run_one(
     runner = VARIANT_RUNNERS.get(variant)
     if runner is None:
         return _error_record(cell, cfg, f"unknown variant: {variant}")
+
+    # Field-order shuffle (opt-in via config). Deterministic per rep so runs stay
+    # reproducible; the seed is recorded on the run so the ordering is recoverable.
+    field_order_seed: int | None = None
+    if cfg.shuffle_field_order:
+        field_order_seed = int(cell["rep"])
+        sample = {**sample, "payload": _shuffle_payload(sample.get("payload"), field_order_seed)}
 
     timestamp = dt.datetime.now(dt.timezone.utc).isoformat()
 
@@ -129,6 +149,7 @@ def run_one(
         "model_alias_requested": cell["model_alias"],
         "model_resolved": variant_result.get("model_resolved"),
         "rep": cell["rep"],
+        "field_order_seed": field_order_seed,
         "temperature": cfg.temperature,
         "input_tokens": variant_result["input_tokens"],
         "output_tokens": variant_result["output_tokens"],

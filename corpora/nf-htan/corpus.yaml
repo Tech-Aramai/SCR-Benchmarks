@@ -13,6 +13,12 @@
 name: nf-htan
 description: NF-OSI + HTAN2 biomedical JSON Schemas
 
+# Interconnection profile (informational; describes how the schema is linked).
+structure: >-
+  Two flat collections — 23 HTAN2 (v1.2.0) + 70 NF-OSI per-template JSON Schemas
+  (93 files) with ZERO cross-schema $refs. Each template is standalone; no
+  reference traversal. Exercises single-schema identification only.
+
 # Short phrase naming the schema universe in scope. The grader uses this when
 # deciding whether a predicted schema is a hallucination (outside the universe).
 universe_description: NF-OSI + HTAN2
@@ -21,20 +27,20 @@ universe_description: NF-OSI + HTAN2
 sources:
   # url variant: public repositories, listed in the model's prompt.
   url:
-    - https://github.com/ncihtan/htan2-data-model/tree/main/JSON_Schemas/v1.1.0
+    - https://github.com/ncihtan/htan2-data-model/tree/main/JSON_Schemas/v1.2.0
     - https://github.com/nf-osi/nf-metadata-dictionary/tree/main/registered-json-schemas
   # zip variant: subdirectories under this corpus's fixtures/zip/, with a human
   # label each. `dir` must match the folder created when schemas-zip/*.zip is
   # extracted (see README).
   zip:
     - dir: ncihtan_htan2-data-model
-      label: HTAN2 v1.1.0 JSON Schemas
+      label: HTAN2 v1.2.0 JSON Schemas
     - dir: nf-osi_nf-metadata-dictionary
       label: NF-OSI registered JSON schemas
   # mcp variant: the CoreModels project that has this corpus loaded. Not a
   # secret (it is an identifier); the server URL + bearer token stay in .env.
   mcp:
-    project_id: 9c7a4b51b13440fca6ba4f840ebca21c
+    project_id: 80215e05a1ba4dd8a37e0a21a2f39605
 
 # Optional per-corpus overrides of the global matrix, e.g.:
 # reps_per_model: 5

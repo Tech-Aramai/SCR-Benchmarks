@@ -2,7 +2,7 @@
 
 > Results summary for the structured-context-retrieval benchmark: measurements, plots, and methodology notes. Updated as the test matrix fills in.
 
-> **Provenance.** All results in this document were collected in **April 2026** against the then-current CoreModels MCP (authentication and tool surface as of that date). The MCP has since changed — both its authentication and its tool set — so these figures are a point-in-time snapshot, not a measurement of the current system. The thesis-level findings do not depend on the specific tool surface.
+> **Provenance.** All results in this document were collected in **April 2026** against the then-current CoreModels graph and the schema set of that date — specifically **HTAN2 v1.1.0** plus the NF-OSI dictionary as it stood then. The corpus has **since moved to HTAN2 v1.2.0** (and the NF-OSI dictionary has grown), and the MCP graph has been re-synchronized, so these figures are a **point-in-time snapshot on a previous schema version**, not a measurement of the current corpus. The thesis-level findings do not depend on the specific schema version or tool surface.
 
 ## Thesis
 
@@ -176,15 +176,15 @@ We considered two alternative simulations and chose A as the fairest baseline:
 
 ### 2. Caching dynamics affect every variant
 
-MCP reps 2 and 3 had `input_tokens=8` because the system prompt was cached on rep 1. URL and ZIP only cache the system prompt; multi-turn tool-result content is uncached. A production deployment of any non-MCP variant could close some of the gap with breakpoint-on-last-message caching — worth flagging so the MCP win isn't oversold.
+MCP reps 2 and 3 had `input_tokens=8` because the system prompt was cached on rep 1. URL and ZIP only cache the system prompt; multi-turn tool-result content is uncached. A real, at-scale deployment of any non-MCP variant could close some of the gap with breakpoint-on-last-message caching — worth flagging so the MCP win isn't oversold.
 
 ### 3. Model resolution audit trail
 
-Every run record includes `model_resolved` (the snapshot the alias resolved to at request time). All current runs resolved their aliases to a single snapshot. Pin to dated snapshots in `config.yaml` before the production run; the audit trail catches alias drift mid-experiment.
+Every run record includes `model_resolved` (the snapshot the alias resolved to at request time). All current runs resolved their aliases to a single snapshot. Pin to dated snapshots in `config.yaml` before the full benchmark run; the audit trail catches alias drift mid-experiment.
 
 ## Reproducibility
 
-- Pin model versions to dated snapshots in `config.yaml` before the production run. Aliases drift; dated IDs do not.
+- Pin model versions to dated snapshots in `config.yaml` before the full benchmark run. Aliases drift; dated IDs do not.
 - Capture `response.model` per run into `model_resolved` so silent alias updates are visible.
 - For the URL variant, snapshot the GitHub commit SHA via `git ls-remote` per run (deferred).
 - No seed parameter exists for Claude; determinism comes from the absence of sampling parameters on Opus 4.7. The 3-rep design captures any residual variance.
