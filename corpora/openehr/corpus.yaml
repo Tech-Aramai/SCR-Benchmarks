@@ -1,0 +1,47 @@
+# Corpus: openEHR Reference Model (RM) Release-1.1.0 JSON Schemas
+#
+# Smoke-test corpus. Per-class JSON Schemas published in the openEHR
+# specifications-ITS-JSON repo. Only the mcp and url variants are exercised here
+# (no local zip snapshot). Matrix trimmed to one cheap model / one rep / one
+# sample.
+
+name: openehr
+description: openEHR RM (Reference Model) Release-1.1.0 JSON Schemas
+
+# Interconnection profile (informational; describes how the schema is linked).
+structure: >-
+  103 per-class files with ~1,066 CROSS-FILE $refs (absolute URLs to other schema
+  documents). Genuinely reference-rich across schemas: container/entry types link
+  out heavily (COMPOSITION 22 refs, OBSERVATION 33 refs) down through
+  ITEM_STRUCTURE -> ELEMENT -> DV_* leaves (DV_QUANTITY 4 refs). The linkage lives
+  in the container types, not the leaves — this is the substrate for the
+  compounding graph-traversal test; a leaf-type sample (the current DV_QUANTITY
+  exact) does not reach it.
+
+# Names the schema universe for the grader's hallucination check.
+universe_description: openEHR RM (Reference Model) Release-1.1.0 JSON Schemas
+
+sources:
+  # url variant: the model navigates the published GitHub folder (per-class files).
+  url:
+    - https://github.com/openEHR/specifications-ITS-JSON/tree/master/components/RM/Release-1.1.0
+  # zip variant: schemas extracted under this corpus's fixtures/zip/. `dir` must
+  # match the folder holding the per-class schema files.
+  zip:
+    - dir: openehr
+      label: openEHR RM Release-1.1.0 JSON Schemas (per-class files)
+  # mcp variant: the CoreModels project that has openEHR RM loaded.
+  mcp:
+    project_id: 62b6848984bc40bc9e4486e00fb146cb
+
+# --- run overrides of the global matrix (config.yaml) ---
+variants: [mcp, url, zip]
+# `underdetermined` = the reference-reachability A4 sample. `exact` is the original
+# smoke sample (already run at 1 rep; unaffected unless re-run).
+sample_types: [exact, underdetermined]
+reps_per_model: 3
+# Field-order shuffle for the A4 cells (SA-ISR §8).
+shuffle_field_order: true
+models:
+  - id: haiku-4-5
+    alias: claude-haiku-4-5-20251001

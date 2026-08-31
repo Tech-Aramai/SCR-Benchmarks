@@ -1,0 +1,13 @@
+{
+  "run_id": "url__e-exact-fhir-observation__haiku-4-5__rep1",
+  "status": "error",
+  "timestamp": "2026-07-06T21:34:07.596502+00:00",
+  "variant": "url",
+  "sample_type": "exact",
+  "sample_id": "e-exact-fhir-observation",
+  "model_id": "haiku-4-5",
+  "model_alias_requested": "claude-haiku-4-5-20251001",
+  "rep": 1,
+  "temperature": 0.0,
+  "error": "BadRequestError: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'prompt is too long: 205251 tokens > 200000 maximum'}, 'request_id': 'req_011CcmXCDZj86bhj5FwVPWbH'}"
+}

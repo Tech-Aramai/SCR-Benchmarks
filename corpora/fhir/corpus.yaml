@@ -1,0 +1,41 @@
+# Corpus: HL7 FHIR R6 (6.0) resource schemas
+#
+# Smoke-test corpus for the SCR benchmark harness. Uses the single-file FHIR
+# JSON Schema (draft-06) published at content.coremodels.io. The matrix is
+# deliberately trimmed here (one cheap model, one rep, one sample) via the
+# overrides at the bottom — enough to exercise all three variants end to end.
+
+name: fhir
+description: HL7 FHIR R6 (6.0) resource schemas
+
+# Interconnection profile (informational; describes how the schema is linked).
+structure: >-
+  Single monolithic draft-06 document (~4.3 MB, 887 definitions) with ~13,580
+  $ref occurrences, ALL internal (#/definitions/...). Reference-rich but
+  self-contained in one file: the whole model is present once fetched, so the
+  challenge is payload size (url overflowed the 200K context window), not
+  cross-schema linkage.
+
+# Names the schema universe for the grader's hallucination check.
+universe_description: HL7 FHIR R6 (6.0) resource schemas (887 resource/type definitions)
+
+sources:
+  # url variant: the model fetches this single JSON Schema document.
+  url:
+    - https://content.coremodels.io/api/assets/schematica-website/8e43095c-7bfa-42c4-98cf-fc2becff4b9b/fhir.schema6.0.json
+  # zip variant: extracted under this corpus's fixtures/zip/. `dir` must match
+  # the folder holding the schema file(s).
+  zip:
+    - dir: fhir
+      label: HL7 FHIR R6 JSON Schema (single-file, draft-06)
+  # mcp variant: the CoreModels project that has FHIR R6 loaded.
+  mcp:
+    project_id: 147815447b91401685e6ad3615de1814
+
+# --- smoke-run overrides of the global matrix (config.yaml) ---
+variants: [mcp, url, zip]
+sample_types: [exact]
+reps_per_model: 1
+models:
+  - id: haiku-4-5
+    alias: claude-haiku-4-5-20251001

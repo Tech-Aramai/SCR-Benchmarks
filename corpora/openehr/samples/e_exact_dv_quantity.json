@@ -1,0 +1,18 @@
+{
+  "id": "e-exact-openehr-dv-quantity",
+  "type": "exact",
+  "payload": {
+    "magnitude": 120.0,
+    "units": "mm[Hg]",
+    "precision": 0,
+    "units_system": "http://unitsofmeasure.org",
+    "units_display_name": "mmHg"
+  },
+  "expected": {
+    "behavior": "commit",
+    "schema_name": "DV_QUANTITY",
+    "registry": "openehr",
+    "alternates_acceptable": [],
+    "grading_note": "correct iff the assistant commits to the openEHR RM DV_QUANTITY data type. The magnitude + units + precision (+ units_system / units_display_name) combination is characteristic of DV_QUANTITY. Committing to DV_COUNT (integer magnitude, no units), the abstract DV_AMOUNT, or DV_PROPORTION counts as wrong; punting to a candidate list counts as over-narrowing since this sample has a clear single match."
+  }
+}

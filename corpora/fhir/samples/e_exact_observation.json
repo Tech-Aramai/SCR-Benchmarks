@@ -1,0 +1,42 @@
+{
+  "id": "e-exact-fhir-observation",
+  "type": "exact",
+  "payload": {
+    "status": "final",
+    "category": [
+      {
+        "coding": [
+          {
+            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code": "laboratory",
+            "display": "Laboratory"
+          }
+        ]
+      }
+    ],
+    "code": {
+      "coding": [
+        {
+          "system": "http://loinc.org",
+          "code": "718-7",
+          "display": "Hemoglobin [Mass/volume] in Blood"
+        }
+      ]
+    },
+    "subject": { "reference": "Patient/example" },
+    "effectiveDateTime": "2026-05-01T09:30:00Z",
+    "valueQuantity": {
+      "value": 13.5,
+      "unit": "g/dL",
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL"
+    }
+  },
+  "expected": {
+    "behavior": "commit",
+    "schema_name": "Observation",
+    "registry": "fhir",
+    "alternates_acceptable": [],
+    "grading_note": "correct iff the assistant commits to the FHIR Observation resource. The status + code (LOINC) + subject + valueQuantity + effectiveDateTime combination is characteristic of Observation. Committing to DiagnosticReport, Condition, or any other resource counts as wrong; punting to a candidate list counts as over-narrowing since this sample has a clear single match."
+  }
+}

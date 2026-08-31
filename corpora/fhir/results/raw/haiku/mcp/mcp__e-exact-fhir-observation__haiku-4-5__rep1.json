@@ -1,0 +1,87 @@
+{
+  "run_id": "mcp__e-exact-fhir-observation__haiku-4-5__rep1",
+  "status": "graded",
+  "timestamp": "2026-07-08T14:43:25.583701+00:00",
+  "variant": "mcp",
+  "sample_type": "exact",
+  "sample_id": "e-exact-fhir-observation",
+  "model_id": "haiku-4-5",
+  "model_alias_requested": "claude-haiku-4-5-20251001",
+  "model_resolved": "claude-haiku-4-5-20251001",
+  "rep": 1,
+  "temperature": 0.0,
+  "input_tokens": 3356,
+  "output_tokens": 2064,
+  "total_tokens": 5420,
+  "cache_read_input_tokens": 171073,
+  "cache_creation_input_tokens": 8336,
+  "tool_calls": 11,
+  "tools_used": [
+    "get_mixins_and_relation_groups",
+    "get_project_summary",
+    "search_nodes"
+  ],
+  "turns": 2,
+  "wall_seconds": 58.29581859987229,
+  "stop_reason": "end_turn",
+  "final_text": "Perfect! Based on my investigation of the project schema, I can now provide a definitive answer.\n\n## Schema Identification Result\n\n**Matching Schema: `Observation`**\n\n**Node ID: `3ded1e4e43c745d4b431784c918e99c0`**\n\n### Verification\n\nThe sample JSON matches the **Observation** type in the project. The key fields from the sample are all present in the Observation schema:\n\n1. **`status`** \u2192 Element ID: `3edfae298eb343e59bbd018d5d6c3658` (connected via Domain Includes relation)\n2. **`category`** \u2192 Element present in project (multiple category elements exist)\n3. **`code`** \u2192 Element present in project (multiple code elements exist)\n4. **`subject`** \u2192 Element present in project (multiple subject elements exist)\n5. **`effectiveDateTime`** \u2192 Element ID: `12498e859cb54a3993c8e349544113ce` (connected via Domain Includes relation)\n6. **`valueQuantity`** \u2192 Element ID: `d488689cb90242e3b8e4f04935122dd0` (connected via Domain Includes relation)\n\nAll fields in the sample correspond to properties defined in the Observation type schema. The structure matches the FHIR Observation resource pattern with laboratory observation data including hemoglobin measurement.\n\n**Source:** Project `147815447b91401685e6ad3615de1814`, Type node `3ded1e4e43c745d4b431784c918e99c0` in space `9384560a0526489f961003f2608dffb5`",
+  "predicted_schema": "Observation",
+  "predicted_candidates": [],
+  "predicted_behavior": "commit",
+  "cited_id_or_path": "3ded1e4e43c745d4b431784c918e99c0",
+  "correct": true,
+  "hallucinated": false,
+  "abstained_or_narrowed": false,
+  "grader_notes": "Committed to Observation citing status, code (LOINC), subject, effectiveDateTime, and valueQuantity as characteristic fields.",
+  "grader_model": "claude-opus-4-7",
+  "per_turn_tools": null,
+  "raw_response": {
+    "id": "msg_011CcpmZHd2jA18UBbTAhoFY",
+    "container": null,
+    "content": [
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "{\"format\":\"node:[id,label,nodeType,[spaceIds]]\",\"nodes\":[[\"d488689cb90242e3b8e4f04935122dd0\",\"valueQuantity\",\"Element\",[\"9384560a0526489f961003f2608dffb5\"]]]}",
+            "type": "text"
+          }
+        ],
+        "is_error": false,
+        "tool_use_id": "mcptoolu_01FoMGiwrbfrVoZMGmJQpq8d",
+        "type": "mcp_tool_result"
+      },
+      {
+        "citations": null,
+        "text": "Perfect! Based on my investigation of the project schema, I can now provide a definitive answer.\n\n## Schema Identification Result\n\n**Matching Schema: `Observation`**\n\n**Node ID: `3ded1e4e43c745d4b431784c918e99c0`**\n\n### Verification\n\nThe sample JSON matches the **Observation** type in the project. The key fields from the sample are all present in the Observation schema:\n\n1. **`status`** \u2192 Element ID: `3edfae298eb343e59bbd018d5d6c3658` (connected via Domain Includes relation)\n2. **`category`** \u2192 Element present in project (multiple category elements exist)\n3. **`code`** \u2192 Element present in project (multiple code elements exist)\n4. **`subject`** \u2192 Element present in project (multiple subject elements exist)\n5. **`effectiveDateTime`** \u2192 Element ID: `12498e859cb54a3993c8e349544113ce` (connected via Domain Includes relation)\n6. **`valueQuantity`** \u2192 Element ID: `d488689cb90242e3b8e4f04935122dd0` (connected via Domain Includes relation)\n\nAll fields in the sample correspond to properties defined in the Observation type schema. The structure matches the FHIR Observation resource pattern with laboratory observation data including hemoglobin measurement.\n\n**Source:** Project `147815447b91401685e6ad3615de1814`, Type node `3ded1e4e43c745d4b431784c918e99c0` in space `9384560a0526489f961003f2608dffb5`",
+        "type": "text"
+      }
+    ],
+    "context_management": null,
+    "model": "claude-haiku-4-5-20251001",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 231
+      },
+      "cache_creation_input_tokens": 231,
+      "cache_read_input_tokens": 22227,
+      "inference_geo": "not_available",
+      "input_tokens": 0,
+      "iterations": null,
+      "output_tokens": 391,
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": null
+    }
+  },
+  "error": null
+}

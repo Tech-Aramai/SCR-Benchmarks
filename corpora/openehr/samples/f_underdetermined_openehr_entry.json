@@ -1,0 +1,32 @@
+{
+  "id": "f-underdetermined-openehr-entry-shared",
+  "type": "underdetermined",
+  "payload": {
+    "name": { "_type": "DV_TEXT", "value": "Serum sodium level" },
+    "language": {
+      "_type": "CODE_PHRASE",
+      "terminology_id": { "_type": "TERMINOLOGY_ID", "value": "ISO_639-1" },
+      "code_string": "en"
+    },
+    "encoding": {
+      "_type": "CODE_PHRASE",
+      "terminology_id": { "_type": "TERMINOLOGY_ID", "value": "IANA_character-sets" },
+      "code_string": "UTF-8"
+    },
+    "subject": { "_type": "PARTY_SELF" },
+    "data": { "name": { "_type": "DV_TEXT", "value": "measurement data" } }
+  },
+  "expected": {
+    "behavior": "narrow",
+    "under_determined": true,
+    "sa_isr": "< 1.0 (|Cand| = 3; N pending the openEHR-N decision)",
+    "candidate_types": ["OBSERVATION", "EVALUATION", "ADMIN_ENTRY"],
+    "registry": "openehr",
+    "reachability_note": "Reference-reachability A4 (the openEHR-specific claim, distinct from the nf-htan candidate-completeness A4). The payload carries the shared CARE_ENTRY / ENTRY attributes {name, language, encoding, subject, data} but NO root `_type`. Those five fields are ALL present in OBSERVATION, EVALUATION, and ADMIN_ENTRY — three separate per-class schema documents. To even discover that the input is under-determined, a surface must read and compare those linked ENTRY schemas; a surface that inspects only the first plausible file (e.g. OBSERVATION.json) sees every field satisfied and can satisfice into a false commit. The two fields that WOULD disambiguate are both behind references: `state` (a HISTORY, present only on OBSERVATION) and the runtime type of `data` (HISTORY for OBSERVATION vs ITEM_STRUCTURE for EVALUATION / ADMIN_ENTRY) — neither is resolvable from the flat payload here.",
+    "disambiguators_absent": {
+      "OBSERVATION": "state (HISTORY) — present only on OBSERVATION",
+      "data_typing": "data is given only a name, so its structure type (HISTORY vs ITEM_STRUCTURE) cannot be resolved to separate OBSERVATION from EVALUATION/ADMIN_ENTRY"
+    },
+    "grading_note": "A4 / REFUSAL test (SA-ISR < 1.0). This input is UNDER-DETERMINED: {name, language, encoding, subject, data} are shared ENTRY attributes that appear in OBSERVATION, EVALUATION, AND ADMIN_ENTRY, and no field distinguishes among them (there is no root `_type`, no `state`, and `data` is not typed). GRADING: correct=true iff the assistant does NOT commit to a single RM type — it must narrow (return the candidate set, ideally {OBSERVATION, EVALUATION, ADMIN_ENTRY} or a superset) OR decline to commit, and its reasoning must acknowledge that several ENTRY subtypes share these fields with no disambiguator present. predicted_behavior of `narrow` or `decline` both count as correct. correct=false AND hallucinated=true if the assistant commits to any single RM type (OBSERVATION, EVALUATION, ADMIN_ENTRY, or anything else) — committing to OBSERVATION because it is the most familiar ENTRY type is the exact false-confidence failure A4 is designed to catch. Note for interpretation (not grading): a surface that could resolve the `data` reference type or find `state` would still not reach |Cand|=1 here, so refusal is correct even for a fully reference-reaching surface."
+  }
+}
