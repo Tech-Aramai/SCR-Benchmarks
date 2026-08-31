@@ -1,0 +1,290 @@
+{
+  "run_id": "mcp__c-foreign-financial__sonnet-4-6__rep3",
+  "status": "graded",
+  "timestamp": "2026-08-31T19:57:25.957745+00:00",
+  "variant": "mcp",
+  "sample_type": "foreign",
+  "sample_id": "c-foreign-financial",
+  "model_id": "sonnet-4-6",
+  "model_alias_requested": "claude-sonnet-4-6",
+  "model_resolved": "claude-sonnet-4-6",
+  "rep": 3,
+  "field_order_seed": null,
+  "temperature": 0.0,
+  "input_tokens": 263,
+  "output_tokens": 1634,
+  "total_tokens": 1897,
+  "cache_read_input_tokens": 159437,
+  "cache_creation_input_tokens": 18107,
+  "tool_calls": 9,
+  "tools_used": [
+    "get_project_summary",
+    "run_code",
+    "search_nodes"
+  ],
+  "turns": 1,
+  "wall_seconds": 65.76921130000119,
+  "stop_reason": "end_turn",
+  "final_text": "I'll systematically explore the project to identify the best matching schema. Let me start by getting the project summary and schema details.The project appears to be a biomedical/NF (Neurofibromatosis) research project. The sample fields (`transactionId`, `amount`, `currency`, `merchantId`, `settledAt`) look financial \u2014 very different from what's in this project. Let me search more specifically for any financial or transaction-related types/elements.All six targeted searches return **zero results**. The evidence is conclusive. Here is my finding:\n\n---\n\n## \u274c No Matching Schema Found\n\n**No schema in project `80215e05a1ba4dd8a37e0a21a2f39605` matches the provided sample.**\n\n### What the sample contains\n| Field | Value |\n|---|---|\n| `transactionId` | `\"txn_abc123\"` |\n| `amount` | `149.99` |\n| `currency` | `\"USD\"` |\n| `merchantId` | `\"merch_xyz\"` |\n| `settledAt` | `\"2026-04-28T10:00:00Z\"` |\n\nThese are clearly **financial / payment-settlement** fields.\n\n### What the project actually contains\nThe project (`80215e05a1ba4dd8a37e0a21a2f39605`) is a **biomedical research schema** \u2014 specifically a **Neurofibromatosis (NF) data model** hosted on the Synapse platform. Its types, elements, and taxonomies cover domains such as:\n- Clinical templates (biospecimen, genomics, proteomics, imaging, etc.)\n- Medical ontologies (UBERON anatomy codes, ICD/ICD-O codes, gene symbols)\n- Research metadata (assay types, sequencing workflows, study/publication records)\n\n### Exhaustive search performed\nSearches for `transaction`, `payment`, `merchant`, `currency`, `amount`, and `settled` all returned **0 nodes** across all node types (Types, Elements, Taxonomies).\n\n### Conclusion\n> **Under Rule 3: No schema in scope matches this sample. Do not use this project's schema to validate or describe the provided JSON. The sample appears to belong to a financial/payments domain that is entirely absent from this project.**",
+  "predicted_schema": null,
+  "predicted_candidates": [],
+  "predicted_behavior": "decline",
+  "cited_id_or_path": null,
+  "correct": true,
+  "hallucinated": false,
+  "abstained_or_narrowed": true,
+  "grader_notes": "Assistant correctly declined, noting the financial fields don't match the biomedical NF schema.",
+  "grader_model": "claude-opus-4-7",
+  "per_turn_tools": null,
+  "raw_response": {
+    "id": "msg_011CebR81HPNJwdeg4VdncvY",
+    "container": null,
+    "content": [
+      {
+        "citations": null,
+        "text": "I'll systematically explore the project to identify the best matching schema. Let me start by getting the project summary and schema details.",
+        "type": "text"
+      },
+      {
+        "id": "mcptoolu_01VRnjaxhrA4bwEQEyBiwMea",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "code": "\n// Step 1: Get project summary to see all types/elements\nconst summary = await tools.graph_get_project_summary({ pageSize: 250 });\nreturn summary;\n"
+        },
+        "name": "run_code",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "Tool 'graph_get_project_summary' is not available in code mode.",
+            "type": "text"
+          }
+        ],
+        "is_error": true,
+        "tool_use_id": "mcptoolu_01VRnjaxhrA4bwEQEyBiwMea",
+        "type": "mcp_tool_result"
+      },
+      {
+        "id": "mcptoolu_017oWNRgqVJHJuB2w92F5GfL",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "pageSize": 250
+        },
+        "name": "get_project_summary",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "{\"format\":\"[Label:Id,...] per category. Categories paginate independently: re-request with an incremented page until hasMore is false for each.\",\"types\":{\"pageSize\":250,\"items\":\"[org.synapse.nf-scrnaseqtemplate:6e98dda905c845aeb57e808040ffcc91,org.synapse.nf-rnaseqtemplate:5e73189c6e2e4864a7c7b61fa3c8d404,org.synapse.nf-proteinassaytemplate:33255b9e4b454fd48733d9432b98c3d9,org.synapse.nf-genericdataresourcetemplate:b65d2b6c0a9d4e10a3d1d93ddefdc094,org.synapse.nf-processedexpressiontemplate:406dcf1685ec422b9f1a62a7f8513976,org.synapse.nf-analysisresulttemplate:5f6e42c98030492d920ff1ff9d3585d0,org.synapse.nf-portalstudy:596c4605818c427388499278bacc7aa5,org.synapse.nf-biospecimentemplate:7b8745f7b42c463c82aa8e85efdd70bb,panel:aac5661cff884e799bb037801c11799d,org.synapse.nf-animalindividualtemplate:c6de9f9b0605469f8971911f5ab05938,org.synapse.nf-updatemilestonereport:d6340d8ddc6a424090acc791c924e5be,org.synapse.nf-proteomicsassaytemplate:5b85d6584c8340f195099905952caecf,org.synapse.nf-nonbiologicalassaydatatemplate:b3a915e73e1042ddb309689bc9254bae,org.synapse.nf-datalandscape:c7b7d13d11b24fbb8f5eb5e475559d70,org.synapse.nf-imagingassaytemplate:4220831d83f047d6aa7729278d8422b0,org.synapse.nf-genomicsassaytemplate:c0b6889bcf6b4369b61de8720a35fd2e,org.synapse.nf-generalmeasuredatatemplate:20a15300549f4560bbd19f70e29967fa,org.synapse.nf-humancohorttemplate:7fb25151d14d4fefa4ba2e6d102ac287,org.synapse.nf-affinityproteomicstemplate:d6438799ebb240a9815bc56217b40efb,org.synapse.nf-pdxgenomicsassaytemplate:1b2e38c27d7741ad874c17c2e941aec3,org.synapse.nf-platebasedreporterassaytemplate:52aa0f67749c412f98aee46df06e9e1f,org.synapse.nf-processedmergeddatatemplate:ce32c537f83644e29e012d896db79e3c,level_3:1b6c0c1405904855b5b2715643c6283d,org.synapse.nf-epigenomicsassaytemplate:deafa2f29c9540b0a35c2f330e34cce6,level_3_4:23df2412bdaa4a09b7c075849aad2a8f,org.synapse.nf-portalpublication:c1f79e20c6fd4f25a4c454a9366d0d18,level_1:e5a219784f124dbeaeb8729a29aeae9b,org.synapse.nf-methylationarraytemplate:a9032507aad24dc9b4f360eabe8fcc77,org.synapse.nf-materialscienceassaytemplate:a72b564a28f74c5988cbcd7272d64d39,level_4:4d1a2f58824c4329a387d53fac89ef3b,org.synapse.nf-biologicalassaydatatemplate:930f0d337dae49f1a3dc137e32b24948,molecular:bbf31a7d22ea43428cacc7447da0fb53,org.synapse.nf-processedalignedreadstemplate:443073153eda4909a1acef5c1acb784a,org.synapse.nf-workflowreport:79ebba41138b468ba9ef110d5182ee94,org.synapse.nf-proteinarraytemplate:9b53ed39edd745a3bd1a7273be31d302,level_3:d23efbf7ff9c4cfca5e20fb25fcf72c3,org.synapse.nf-kinomicsassaytemplate:cce2b1082eed4e7e940482ab54580cb3,diagnosis:071a0e591fa5467db1777e7574b85efe,org.synapse.nf-chipseqtemplate:437922a9cbbc46e4aa5f0d6b6d8f92a7,org.synapse.nf-opticgliomaclinicaltemplate:cf6ce2f2fa5a4a9caf4cef9fbf6b1050,org.synapse.nf-spatialtranscriptomicssequencingtemplate:d342b8b0878245c88294a09dd9f57e97,org.synapse.nf-epidemiologydatatemplate:aed52aac1e334c12a04c4f8d12448410,org.synapse.nf-filebasedtemplate:385bd5da206348f1a6ef78cb8880838a,followup:3e78220d78be43d788e36a729d1c4bdc,org.synapse.nf-electrophysiologyassaytemplate:4b9658f0f49c4127875bb4b6e07df0c3,biospecimen:49d0227211654561b8738e61658ca4c1,org.synapse.nf-scsequencingassaytemplate:57753540b65e46f58c4951b4bfa30f56,org.synapse.nf-flowcytometrytemplate:5c5fc909ecdc4dcfaefd1ba10ff0e041,org.synapse.nf-celltissuephenotypingtemplate:1a1cb67721fc41b682fccdd7fabcb8ba,org.synapse.nf-geneticsassaytemplate:dceb06a0e6ef451fa322f9fa75b29469,level_4:ec80daacdfbd4b159c642f81ecd7120b,org.synapse.nf-bulksequencingassaytemplate:3a7d2037043f4fc6a4438706991f82a2,org.synapse.nf-publicationtemplate:af94fc3f38c942638ef5983c6e92dd39,exposure:9e9a281fa96e4052a3000476e1c8ae41,org.synapse.nf-recordbasedtemplate:691bf220c2c24c50bfd618deda3efeea,digital_pathology:f135036cd3b849799a39968ff58d4adb,org.synapse.nf-wgstemplate:c24950aa31a44d3bb83f5749c51cfaa5,org.synapse.nf-microscopyassaytemplate:d2deafcb072d4771ae429c012de2eff3,demographics:9e3a3234a92147fe9d630920703f109c,org.synapse.nf-portaldataset:ac8f6c5a67924e72818a5f1fe3f2e16e,org.synapse.nf-clinicalassaytemplate:402df5054d6f4083a4fbb4b45d8dcd1f,level_2:0796e72c3c6b40bd8fdfcfe4e1aa496d,org.synapse.nf-partialtemplate:70a928799c154cfebf831b6c427b3e4b,org.synapse.nf-genomicsarraytemplate:96dd0d4f38e2496c88300759ad76ba4a,org.synapse.nf-recordset:5dc9eb3abd714c3a94ade40393f58557,org.synapse.nf-spatialtranscriptomicsimagingtemplate:6db94abadef24ab4b6a8802150de1121,scrna_seq_level2:a4fc4836284b4f3a85dc125fe784b39b,org.synapse.nf-westemplate:320197cfbcaa4900bfac417667aa3e66,org.synapse.nf-processedaggregateddatatemplate:9f9b00fc10e34b839c9c423e29f2cacd,therapy:52e76317bd304c368951c6464516f9d5,org.synapse.nf-lightscatteringassaytemplate:ec0dbed2625e45a1807c8a5dfc8a1a6b,vital_status:9f78fe020ea74c59a3a182c736eaa2f9,org.synapse.nf-proteininteractionassaytemplate:9240c0d9f68b4c30b043b66de0792904,org.synapse.nf-processedgeneexpressiontemplate:dcc1d537841a408989a20a2007567bc4,org.synapse.nf-referencesequencetemplate:9f05f3b2bfd74a7d91147f3b7b92f780,org.synapse.nf-superdataset:fae061f55536407cb5df30eb46d316e3,org.synapse.nf-massspecassaytemplate:480f43140dd8450dba19ca01d6f462ae,org.synapse.nf-template:4de2a17da39a48a99c2487b114b281eb,org.synapse.nf-genomicsassaytemplateextended:b8618faec28a430db4ca37578fdfe9b1,org.synapse.nf-epigeneticsassaytemplate:e67e7d6a3c904ea48f4be8995de76bf2,org.synapse.nf-protocoltemplate:f84c808d5481426a8004a12946d8bd41,level_2:68669d28d676464fa85e0323d2a0bed1,org.synapse.nf-immunomicroscopytemplate:3d87cda56df9475eb01f8729bfea3e4e,org.synapse.nf-mriassaytemplate:8d613b2b8dae4705bd1b54d8edc9ae3c,org.synapse.nf-pharmacokineticsassaytemplate:0947036e60ce4fc6840b55295029d241,level_1:352b4c12a78b4cfd94ef74fa4231f29c,org.synapse.nf-behavioralassaytemplate:62581f19e5564e9a81d7b23065e54e4e,level_3:498ea9d0d5444dbd8503641d8bac6346,scrna_seq_level1:9f0fc4d9f8804293a148fa72393f46e7,org.synapse.nf-processedvariantcallstemplate:b9582a4263cd4342a198431519e3aa05,org.synapse.nf-sourcecodetemplate:2e5f815a883e41ebb9e85a3bd05c936a,family_history:0ec26a35ea104c83a613d026e1c79d04]\"},\"elements\":{\"pageSize\":250,\"hasMore\":true,\"items\":\"[READ_INDICATOR:04a563480c8941a6bf4bdc0386c43424,HAS_REGISTRATION_FILES:41e7066371534d458af78b0001620571,AGE_IN_DAYS_AT_LAST_KNOWN_DISEASE_STATUS:637b048dc9814bec84e3990cfa6af16a,grantNumber:4237068b2b524c0c8afc9d0f9f240a87,geneticReagentID:0c3634b9bebe4eb88804e1a3be096617,IMAGING_SOFTWARE:3b61411cc7f84f89829ab9e03dd35d32,abstract:3f9a6f242fc648c49f279d11cdaf46ee,HAS_NORMALISED_ARRAY:c6fcbdfa7a4b49f998a61cb83978c2fe,HAS_CELL_SEGMENTATION:0052fcbfcbdb46ec8b596054bf439242,ICD_O_3_TISSUE_MORPHOLOGY:b211a3fd76fc480da89572523445a7e2,expressionUnit:2b484f98959646c4a61eb23a0260238e,institutions-items:0a11792d27cd415eb10109760940728e,SEGMENTATION_WORKFLOW_TYPE:3f0b7ffe765e4e03955ed2bf23a4d9e9,ALIGNMENT_WORKFLOW_TYPE:3f24a58512e7466ebf5010190d76ec9e,measurementTechnique-items:87d088104c3d4b12b27385859c2e0f47,SMOKING_HISTORY:245e27bf38ed43a4a14795c3d6f35ded,acknowledgementStatements:ed912c0fed4941ce994c27f555576535,nf1GliomaType:01229d2fa446432da3edc221ec195ab5,diagnosis:bf5e639170074e24930f300982e12986,vestibularSchwannoma:b3f6f70b3cf842bb851972e44476fdf4,fileFormat:403b7e57bce34d31889a36b932f4b3cf,compoundName:33c495725f1148e5b518677342cce498,LIBRARY_PREPARATION_DAYS_FROM_INDEX:2aeace078f294dafb9c9e5b3620edaa0,PHARMACOTHERAPY_TYPE:657f84b237484903aa90e435962eeabe,FILENAME:aed265256cb54fbf8973da3c092aaa69,SPECIMEN_LATERALITY:96ed32f5de5f456a8a4cbb27096c6897,runType:cfe0a833909a421f809e7a774c6a336b,PROGRESSION_OR_RECURRENCE:4231fafd3b4a441c82041c8786978da2,REGION_AREA:4be244fb765e42cabdddd7d11ba8973c,EXON:f7e51505c6c94f99ae3672ad0b051469,BASIC_STATISTICS:abca1a920626417bbca49bb0d5221f5f,LIBRARY_LAYOUT:a719daf317914fa9b4c27066328995b4,TOTAL_READS:4b11255d02de45cbb286f40c01249256,AVERAGE_INSERT_SIZE:e32259794cc44d3887c5d8390e144b48,SINGLE_CELL_ISOLATION_METHOD:d6df7aeeefde45f48cd6c28165ed8c68,journal:86d092b20c8041039f106807a9d6f21f,CELL_TOTAL:10d615b49a24408bbad2214ab0cded28,description:da96a20d606a40b595e58b75b50c4b51,libraryKitID:7f6c90d930b64f4a8c3d9e85b1566e7b,CLINICAL_M_STAGE:3761dce1300541bb8694ff731f5f13b0,nf2Genotype:db2a705234e64ee4980b13be5bc3661f,TIMEPOINT_LABEL:66fa1fe7a75f4363aad7eb687f3d8547,TUMOR_CLASSIFICATION:0eb599799c8643938268151c3e68fc48,dataSubtype:80bdea28cb4440289acc162c5ce338ab,SEQUENCING_FILE_TYPE:b6656f13057b42f8918ff9434a72b1c1,manifestation:e80918f1dc304ae8880a43b692cb4792,HTAN_BIOSPECIMEN_ID:a2dd51c38aeb49e5ab37a3fd11371870,genomicReferenceLink:16ca77ee99c6457e91d2b4fa7d6d00d4,LICENSE:3815e559bea34167a1fb07e4d8f5bf71,AGE_IN_DAYS_AT_LAST_KNOWN_SURVIVAL_STATUS:252d488a9836416eb7b88b98d691c88c,libraryPrep:b448898f4ab04804aac1807b26c6fd7a,PROPORTION_COVERAGE_30X:594b51df585149e5a0382545422a69e9,CELL_TYPE_CALLING_METHOD:61307238973d49e0b36a8e8606219252,genePerturbationType:68288bc16de64a07809472bf3aa45526,NUMBER_OF_SEGMENTED_CELLS:edd289df19164c6785a9a6d46dbeb5e2,species-items:13dbd6fbb4014ff1aa3be3370412e3f1,ANNDATA_STRUCTURE_VALIDATED:25eff5b0e3ab4972935975b5ab925de1,dissociationMethod:8ea242e150544bf3b4d76d6c1d6a626f,surgicalResectionAtDiagnosis:7999894b24554bd1abcdd165a1c84c15,experimentalTimepoint:0479f6012d234a5abe975a9f7b6b3e5b,SAME_SECTION_IMAGING_ID:ac51514ee93e484daeaa221567bd31b3,SAME_SECTION_IMAGING_ID-items:4a3b2547fd944d0a97162aae69c69d30,WORKING_DISTANCE:d19a1d5855fa44179001a0dd75c72605,PERCENT_TUMOR_NUCLEI:135f690c1f88486280da6dc0d22d6e54,USER_GENE_NAME:a5c4fbde37f04582a4b53b36ad808440,MENOPAUSE_STATUS:bbecffbc81b3466f8dac359db77766fe,HAS_IMAGES:df5f592645d54d8e97a154e9ae1a2d09,SOMATIC_VARIANTS_SAMPLE_TYPE:8a9ecaa3192547d6914747a7bae1fdac,ANNOTATION_TYPE:388dc4c632444507ac5d544cddcaf7be,nFiles:898222f0b56147e181eadc23eb3a05a4,TUMOR_GRADE:4892e7d938c74b369908cfa46243d31a,interactionScoreType:96d7c086b8ee481ab4326c0acdcdfba1,dataType:0e0ba7d37b2e4906929d543ae2078b36,ageGroup:df9125051a3943cb8003c844636b0364,SIZE_C:08a248b158ea4aafa962fd7d3c581f01,pheochromocytoma:88417a97a5a2485eadfcfb1a259d1813,compoundName:e35a18e3fbdd4c64ba0f7091da826740,specimenType:66725c058b564d89b5452a348a54ff4c,RNA_MEASURED:737ace898bb546a4be2e1bde0cd9ccbd,fundingAgency:631a29921f6d48fcb94869217553042c,platform:02222f76fb1c4f08915ebb5d4e0794d5,QC_MEAN_READS_PER_FEATURE:45ddf5ad320b486cb538248135ed1d6f,series:6c4cbb4644704343b739a613601213ed,TARGET_CAPTURE_KIT:8a1a360ca2cb4f4f970b77c251c91427,isXenograft:ca5867967486436291fc70b44ed94583,GENOMIC_REFERENCE_URL:7e7133be287041269d3cf197707bca1b,CONTAMINATION_ERROR:08b3b60778f64927bed709ce7c65eace,parentSpecimenID:fc152ef8cfb04ac2b0f3c51c8843e770,alternateName:008a82ee2ab44ca281ec5c21880d7659,RESPONSE:513ab6e97f2a403bbb845cdfae12b1bb,PROGRESSION_OR_RECURRENCE_ANATOMIC_SITE_UBERON_CODE-items:9e9a2f29f93d40ec961b2eccc4404103,ETHNIC_GROUP:cfd1eb047144442597e50c160724183d,dataLead:678943a135c343af99e3d4bdcf69e22f,NUMBER_OF_CYCLES:b95cb96759544aed9628b9f1f7005146,PANEL_NAME:9d460418e73b401d90573ced6adf5e83,proportionCoverage10x:c7a16ac53c934c78b2b71f07d78bdcf7,FRAGMENT_MAXIMUM_LENGTH:86acd202897f4cd1a21410f07b7226b6,modelSex:c3251e7bbfd849a6a8caf1174e48a429,aim:f5527ad1f34e4066a8ed7de0dbcab613,FILENAME:081ea42ae8904a5187ff0f59d6eea366,initiative:c02e23a9f6ed4e9dab0f7e67aa7800ee,GERMLINE_VARIANTS_WORKFLOW_URL:59c2c15c7a7146cc8dde00e947804af0,spinalSchwannoma:7089fc735eb24ed187f1a7a332ee2585,experimentalCondition:319d48313a224f7e8b78c18c6cdcfb5c,dataType:0820ecc8ac0a46bd978d340c38b165d3,HAS_RAW_ARRAY:c258b6f6f8e048f88122486c01f15c18,cytassistSample:0e7af79515e64960b015d08d119a6b31,dataUseModifiers:e1510f32a6f045d99d0e01442fde8236,channel:91e183510c644fbc9ae07aab6807c36c,AGE_IN_DAYS_AT_TREATMENT_END:03d7cb1ac70b48dcbf61f05709899b2e,workingDistance:43f5826061a34347a7bfe2f4c0d91c29,MEAN_COVERAGE:cab5a8f69c654dc29d7a236b6ad568be,batchID:ea9a46377be943baa961142ec7e5a3f0,SOMATIC_VARIANTS_WORKFLOW_TYPE:e94fbc44b49b426b966e61d479b14721,CELL_MEDIAN_NUMBER_READS:bb7e47d42d95492aa68a0eb279fa514e,nf1Genotype:8f27151fcc97438789e6368247898ea2,SEQUENCING_CONFIGURATION:bf478c9fbb7647c9912310e2ce80f4d9,FILE_FORMAT:056135ba62a946b59dd00f5f73f1b75c,individualID:5d528d98d5b5417c8f53f2f263f82439,germlineMutation:abf56619efcf4da4ac379da80dba1803,diseaseFocus:7dfd4ad35eba4226987d3cd8752b9d27,platform:678c5b6a2f74402a8d03242fa5ed6e9e,AGE_IN_DAYS_AT_DEATH:b246758e4cf34aeb818a2db2f4da1a5e,AGE_IN_DAYS_AT_FOLLOWUP:462e2300cf514bea92c2d46264186d1f,transplantationType:706a4c6658f24ff5afd0ee1f06eff91d,tumorType:1bcf20e6579041039e9a773543756b99,MOLECULAR_ANALYSIS_METHOD:5a6e8831826d485e989766c7d35f0330,meanCoverage:0ff7b19a9de04f9c82aeb10ef5cf39ae,SIZE_T:a6547944f623490fbfd40e0de5e00032,PERCENT_NECROSIS:ebd46517a6294b3480465143ebfcab2d,SIZE_Z:93fa9c11cc7c4e6494b35547dd7c98b2,modelAgeUnit:c6e90fa3250948b7b0deb1ecfc87c5cf,NUCLEIC_ACID_SOURCE:3d2db5b5dd5e4d7db30561e3b3ab07cb,timepointUnit:9bfc1541db2946bbb592ea3f9df975a3,averageInsertSize:cf895a5857d245208ef32d0b95106928,IrisLischNodules:fd888623a1484a209c4837c11fa00f88,modelAge:f6f12f5df9114fdfbeec635fcf74ccfa,sequenceName:4bbe757b193d42bd815f1b7d3dd812a2,cafeaulaitMacules:b42a390d0fc74e5781f3c9fd27ab6aee,FILENAME:5ecdcfb6881a4ae08bc77d89948892b7,plateWell:43862aafad8e46d7bc32f58d1a0fdc48,readLength:89b08ad631484f948b642efb22a57b32,sampleType:7c14170816094028be0cb5d72f54d229,recordingSource:2480d8b4a5534d1ba73d1e014447e7ea,QC_WORKFLOW_VERSION:651a856aee5948f3aa0a50a5327b021d,subcutaneousNodularNeurofibromas:96fcb59308114082a1d43c9fdfac41f4,AGE_IN_DAYS_AT_SPECIMEN_PROCESSING:6f527e9f3cf64317992b61705487a303,documentation:473f6e8ce23c4b789669786fb018a783,CITATION_OR_DOI:0bdd1891b1fd4583beeef75ea0bb4b9a,DE_IDENTIFIED:4847174b4803401ba1599ee2e3b2e6b1,IMAGE_MODALITY:5d0bca7dce70465bae4487cb21072e08,SITE_DATA_SOURCE:9d43a887139c40ca8066626fb7d9469d,TREATMENT_TYPE-items:8836fe242c104422a8025bdb9b8d3e16,LIBRARY_PREPARATION_KIT_NAME:5ca1d3c5aa7a4a7ca97ec521742f1eed,baitGene:59d2550bc5604966b38c7777c7212935,proportionCoverage30x:5f11189ac27b4c5788d13a8cbec82b11,ALCOHOL_HISTORY_INDICATOR:9a6585c21a7b42e4a1d1bebff8d7ab95,institutions:6b4f01aac58b4f65aae1ddf51a1308a9,HAS_ANNOTATIONS:f4129cc858784c7689f42657927db971,age:efdcda45a55a4d9182f189bc8b5ad178,STRUCTURAL_VARIANT_WORKFLOW_URL:cd05fee05cc1498bb04f7736d030c66c,ADJACENT_BIOSPECIMEN_IDS:548d2872e1404f80b81da16313e16c46,platform:f288a5a6395f435e9f164a1d819b82d7,FILENAME:6f4cd46121384e4baf79bb4d9032070a,fileFormat:a822ba777da547dd81da0f790d262921,CELL_MEDIAN_NUMBER_GENES:a1eecd257c6b4096921d7d37df23d801,QC_SPATIAL_UNIT:e58392425e5e42c4a69eee06e34adde8,GENE_SYMBOL:60e274e6fe7246f198fe3d0ea79ac72c,panelVersion:569e34729a354d9ebc608615f5102ee5,LENS_NUMERICAL_APERTURE:cf540ee2f3434cc09c0749c703308a03,assay:5d27541622b24f24b806dc793a25417d,platform:50d31fc455ba4f85b3df66e0539a9de8,probeSet:a29f24fcf8a24e619a06672f6f29913d,HAS_CLUSTERING:946703b41c244017b89b9cfc1575df31,grantStartDate:6e770d8ec7f54706b672f867833dd828,PROPORTION_COVERAGE_10X:520eced86d214addb000f51f80029c4a,clinicalTrialID:d3351b631f384bda89413050c5f6a283,transplantationRecipientTissue:ab45878db58d4429b9abef00a6a1c513,treatmentEndIndication:1ebe8d44195a4b1fa13ed27d5e8692b1,assay:36b2c3940390467689723690ee074984,MSI_WORKFLOW_LINK:3a191f27a74d4ea3a56d8b13e7e083f1,PLATFORM:d42bc412a7894ca285e589decee3c7ee,radiationAtAnyTime:cb75a171eef74dcf9e7c44beaec6c1c9,MOLECULAR_ANALYSIS_RESULT:423517c28b9b4b2299e6615a60e4cdb4,DE_IDENTIFICATION_METHOD_TYPE:efabc75ea7984966841f14ba7d717686,FIXATION_DURATION_IN_MINUTES:33fa2eb829704921b6487465dc1f6cf7,proteinExtractSource:5c2251aecaaa4218a0288b738e47e93d,TISSUE_SAMPLE_TYPE:e6b9099436db4beda887751635bd6949,DATA_CATEGORY:93de0091f9cd41819c1e1858809224e1,RELATIVES_WITH_CANCER_HISTORY:cc194ccf5e884643945f7b53aac5b5ff,METHOD_OF_DIAGNOSIS:03968e17b7eb40ae9b0590aac5cd91a4,AGE_IN_DAYS_AT_DIAGNOSIS:8d356b6089f147e2a185a0809c35d8e0,heartDefect:900718b1880441518c66ff62e488b238,ASSAY_CHEMISTRY_VERSION:b2f41ef215fa4c139b33ae5cf47562fd,concentrationNaCl:64c439c3b51549e9b337054d7b49cf7c,citation:4bc872392548416ba142108caa321f68,PRESERVATION_METHOD:48d33e0e763c4c959afe95335e7abd37,ADAPTER_SEQUENCE:4a0501cf6b6341c49354442454de029e,SECTION_NUMBER_IN_SEQUENCE:59060acc37cc4e8e9feeb7ebcc535855,TO_TRIM_ADAPTER_SEQUENCE:d40ffc35c1844cc0b47ad41a621603b5,GERMLINE_VARIANTS_WORKFLOW_TYPE:981923639ad0403a988e32e12e951051,individualCount:5fae5068d9eb4dccbafe1d1290440452,protocolPurpose:ed8c12a86a56455faee0a838ccb95a70,RACE:e14a79b21f2045fbb4d197bd44bafa1c,author:7fc73c17e903458db2f7bfea41f556f6,platform:a658cabdd9c3484984dd8abdf86f1783,platform:c394a78b18694e0c8998ceff8644428b,concentrationMaterial:94bbcd9e86d04bb499f288d4fcc823b0,ECOG_PERFORMANCE_STATUS:be49a8ec71b346b7bf1bf55313ec60a5,grantEndDate:1290bf418bc54f0bbc143031f62728c6,LONGEST_DIMENSION:04fa2b2196a940af989e488e939b4f77,genePerturbationTechnology:a6efc8668fdf4fe994a830aaae411aef,workflowLink:45898760a0eb4c149d14f3a1a670fb8c,title:d44e278171744df8a842254ad7299da6,studyId:fd05ca4b2ad548f28e16ada12ddb3d3c,targetDepth:9c125145b9924a0e99128ea62f7f902a,TOOL_COMPATIBILITY:9a7987557ea24912ab6c193aa732f48b,grantDOI:78eb2266e06f4ebd8b02e94b35c05ff9,TISSUE_OR_ORGAN_OF_ORIGIN_UBERON_CODE:fa6c0b312e2f41c08c0a447a4b306d2f,CHECKSUM:41531bf967d14e63aa9a7ff48c19e984,assay:cf75330d553b4d5faae83f90abbb8273,species:ecb5c8f28fc34e389d7a5e650e9b3257,PROCESSING_LOCATION:ddfcc8cae1f74b838020aefec2c676c0,totalReads:d214ba75ad51404e8aaf4248fde20e8a,CELL_BARCODE_TAG:d0918f900e6f46fb87a4fd51f5e41260,proteomicsPanel:40d9698fba174aeda98b96b0297d0ba4,DEGREE_OF_DYSPLASIA:c0aa33c074c746e6a468cbd6b0f0faa2,IS_LOWEST_LEVEL:ea176792a950466d9b2477b001d18713,QC_WORKFLOW_LINK:64e70689164740f988fcc793885530a2,assay:c9428f1f259a43c6bf5ff6989eb257cb,fileFormat-items:b1925d34b32246818e1a9b29e024636d,TEST_ANALYTE_TYPE:2e0b97481184480d9315d914d880b903,PERCENT_GC_CONTENT:16e24c8f59e648b3aaad41ccacb64a32,AA_CHANGE:101abfad63fd47959cce35929ea3ff00,lensAperture:642bdb78365445b2a875476fe6ab21d5,gliomaOrEpendymoma:fee2e794ac504654956ae221e4799b14,TEST_UNITS:6bea1f27508849beb3a73d5f3fdeef14,MPNSTCharacterization:05124771418846ec8ae4346cb0e970d4,MSI_SCORE:b0d0bd5a1494434d8a214dfc3430189f,targetCaptureKitID:1206d4193b9f491686ba69af147fb878,nonopticGlioma:fa140dbdd2314af492af985176f85310,LIBRARY_SELECTION_METHOD:2b4419ca9ba14e6eb6234416fe152cec,libraryPreparationMethod:0134042a21a343f0a4cbc41aaf5afd77,FLOW_CELL_BARCODE:0dbb24cb760e46289f493fc9ccce9919,specimenCount:8687e43dab194ef1899cb9af8dfd57e7,FEATURE_EXTRACTION_METHOD:4580577d5b2c424f9a555225b2e3365a,CAUSE_OF_DEATH_SOURCE:b3c32dc901d04955b785839e7307e0aa,dermalNeurofibromas:1cc2e3f71d004f5dbb29bc3847495827,SLIDE_CHARGE_TYPE:7b95db6b7ae14d05beefa8c58c6e37a6,CONTAMINATION:3aaf666d7b0c4c4dba021dd6d429881e]\"},\"taxonomies\":{\"pageSize\":250,\"hasMore\":true,\"items\":\"[Q75.2:2e7a6241c74047e0b38261e45efe43b6,RNA5SP324:08f6732e269b41d68326e9b49b8d4761,9989/3:ca49d33288ad4e75a12c6d0964006ccf,M46.35:859d273ac63a4dbe8871417541e5958d,C8377:6e6d0ded9eb84604b88029ea1f2972dc,AGAP7P:780d42fff3f54744b4b86fab88c81a17,Lumrotatug:b945ae2190ab40208abb2982c237b459,C6752:06cf2c4b715342a6aba81927c7892e13,PLEKHG1:bea0705da6d14bae8ae54af1b683a797,Topoisomerase I/II Inhibitor NEV-801:533ba3019b2545668f6c864ef7bada8b,C6322:214fcaf13ffa44b9b9a500f84e662e73,UBERON:0005876:3fae8d7a34cb44bca1f88acfc65d4269,LINC01627:cef57b136e5046ce90072e8e8221888c,C27628:90f5dc841c804869bb3549b685118f58,S42.24-:f5c376eeb224461bb7f5617c63404e13,UBERON:2000596:14e69113e1ee449aabffaef34e902c64,GLIS3-AS1:2fee4a4fc4f84831b47ea42546291d8c,CYCSP18:a262dc45b4a540b686468e18cbd2b434,O10.21-:fcd5060e9b9b4f44b2bcfe58e52fa61a,UBERON:0006755:b0a430888381439a87c0bffe79e7654f,C90512:694d0591139d4fb7b9215cabe47cc1d7,UBERON:2001245:35f8e1860a1b4eba8fbfa0d4d558c650,S64.3-:6179ea45ad8a4c0b86fb55288ec9908b,PCGF3-AS2:23b442156d424d528e5e0d467648c9eb,C170827:b96655a87e8f40ddbb37514c7cb13463,CRLS1:963a881fd800408e8d4e3ff10ccc129b,UBERON:0011939:80604408d8df47efa55552d4e49e0c19,C84656:2e3f9cace7ea4b9c8637d4f66c0ba64f,DKKL1:109fdf655e8d4d84a163e05480421693,Anti-CD20/CD3 Bispecific Antibody JS203:b4f676d046f840f29f266f9ef3c4688b,T83.498:7718ccec7ef94a7994a7ebf3e49df8d9,CNOT7P1:e01a3d5593dd4955a245e8680ff85f91,C8896:1cad578d24cf40bdb5a5310f9d5f7a11,TMEM179:e756a432dcff4d4c8506c6fd7f683f58,UBERON:0005470:deaffe5f1d9246788577dc70c68d332e,UBERON:0002527:43e89f9cf84a447dac77eba66dec1df2,LCN15:ff3dc5e50f924b1c8faf06eb15376a74,C89021:06fe5ce2d6114a0c8651e95ad698a1ef,Z45.010:63b590aa841b40199b966838f273ec3d,APOC2:c0ca42b50b9e4d3cba691c6561dc73b9,LASTR:d875b22d4d624cabaa985925afbc8b6d,MIR516A1:6f4e940ebb244ffdb47458bdaf104a46,A49.3:d0d42d29bda34a7a9cef555ad23112eb,Anti-TIM-3 Monoclonal Antibody TQB2618:2ee2b6e8e8b74d468080809aac16649c,TUBB8P7:f7f623b93e1a467d857f6d7c634ae783,EQTN:6912d21905c7446abefd7571122ceb37,C7679:cf8943620da74bf780961658a84c6b05,TMEM144:0dbad80dc74142589e799a5295c07dad,UBERON:0002228:b102d26f941b40589a6ada5a423a24b4,C123115:b3b4531014cc49748bcc1aaaf259a4c8,C7307:982ac790207647e2ba183f581375b726,SEC62-AS1:1a168ea4494643b08a2f643ce83e8b69,SPC24:95ca347e5ae64fdc9463cb8a1a64c88d,NECTIN2P1:5cade8b92acb4981b53c19f00a01db95,UBERON:0014598:6d1b58d1f46e44789083979151306841,C4403:528ebce0ffe143d386ea622e93e4a46d,C7310:08f2c8ee551f4d28b0086d480552e3c2,UBERON:0003045:68ba0285a4f64b63923c8ed023b810b9,K59.00:436c47b1b1ad4a7794c9fe6d1599a46e,M71.47-:376512cafba24055af2517095860777e,C187212:fe4b68e467db4034902c3cde8c571449,SMIM2:7f545587c3924b7a8aed8785413b09bb,9702/1:b564513f8f974a9492e9e2c275a00698,ASTL:da394eeed2a04501b9b393bb4ce57320,BTN2A1:6623fc6bc49f416fa35cdaeeee738e5e,C54039:a134590830d24ed387b5a5aa62b85142,C9475:c34d54a9ec6a4d0ab1c4addca717635f,BOP1:84560b6ce6da497db61329fa9cbdb47c,UBERON:6001652:f3a3cae28b5a4b87a3caec6da7d64553,ARSB:c5ba7e65297d4e31aa8791ed0714b954,RPS24:a3f569e178ab427f999c7c64bb73ff8b,M99.30:c342e0189a374a38a2399fe916ba27ac,F31.11:e55cd1c3adee4b19bd8d732b0116c8df,BNIP3P17:778be45699484c839ae759afca19063a,IGKV3D-15:6a5b85b385684d2dacb70716cb1e3f80,UBERON:2000916:29a475d9e15b411a962afd775affef86,C89302:06d0973586fe4bd89410df738f46ace6,Zurletrectinib:1f8cab295a464df1a6da3da7fc01e870,G72.89:f6d09cc2b3684457a87a4151439e6771,T78.2:25eddea59c5e4aa59bff48eca91d7002,R47.81:2ef0c02e107546dda58085d6f324f479,ERVS71-2:eacc79994bb8466f960fa103421f9173,C6842:53d755d2ee1f4396a211706836f0d4f8,UBERON:0007958:b5261d00e2d1450c9c2e83e2f5bf7540,CFAP251:f7e3fff997f149ff80c35aded9d9fcf2,C6055:8a5f68c382034841b9fca370d8341bd5,C19orf18:439bd9edf7de42a9841396fec12cee5d,A05.0:acad1c4bb77d48f4b034f0f9ba3e8ba7,RPL22L1:7675a28042c148dfa88ce52ecec02c29,Tocotrienol-rich Fraction:d68dc3c392df483ba1bb2623da2eb704,UBERON:0002536:509637367e2347179a5987d8ef0190d0,HEK293 NF1 -/- with R1306X mNf1 cDNA:d9ca82e706f14477bb9d558ddcfa7f17,C174023:7fafdd2dc1f648c0b19c0b3d9089c485,C8673:621537e27b1a4d71a82a3a6d7a68a629,C165563:4f91a1f2d55a4a759dfc991ef1baa079,Recombinant Modified Vaccinia Ankara-5T4 Vaccine:cad444a5b64743f78bc651e05c973cf1,C173166:fabb83adc4534e919527169e26aca0f5,S55.91-:bebb75b20fac4b6c830aa4dd9df78970,NDFIP2:1c9fdd866b944b0882c84cd3a3e4e211,C172951:d1928d11d820402896cd732c01552c86,ANKRD55-AS1:53f337b801f74730a7a7bceb64de2ee3,CCT5-AS1:0da0b8e7d4f949279c7df71fe095ded1,RNA5SP524:84b9465c616347b1b1c85307b80d8e38,RNU6-417P:857f73fa3c7f4ecbbf50ba269ba15f1d,Tarlatamab:e09cfdc0cd814ff7b99513d77446c5a6,M61.08:0b7de887aa9645a892a18daf49453900,SK-MEL-238:bf350aaf197047d4957950d55d95cf2c,UBERON:0004890:c3e092a2f41a488f85a15ef0707dc939,TRPC7:0137792d72244877a6cb1f5fcfbf2e79,RNVU1-25:7010b8efcd494154845da4d100d907e3,RPL6P20:88b5a54c27cc4360badd2753b7decafe,ng/mL/hr:746cc87bc4534cbfbafd292ca898d00b,S31.051:3e7c90c5d21c433ba8e5b3263c3bdfdf,M66.25-:24908e9b98344deab53bb662daecef39,UBERON:0011221:6eb8e8ba49f84017b17306841372481e,UBERON:0005673:6c116c2dac8e44f9b8036cc342ffaeca,CHM:62333cc91382417dad4030fe8cc648cc,HNRNPA1P46:3514d6212f5d4eb98c0d6722ae5d0521,UBERON:0001540:f932fb3f01694ee5bb1d52b42fe3ac11,C134831:7eddbf2b657b479f8a2b6afa27d988a4,FRA2F:af529c347115444eb0a8b6b7f3cdc9ef,RPL21P36:e928bb1617a0449d8539940d6a180f3a,NVL:060d94101a98472b82bdb92905db674c,XG:39d611f291e34a83bbe03b2c5d87b89b,C133572:69e40d6f5ae74f0b8b7eb3eab5da494a,C65187:cac228b9e8b144dea9c6cd9bd4dbd003,OSBPL10:1abe36768762401fa36f1ec51d51c477,LINC01589:1043691273ca4196a6c484d2a244abfb,MYL3:5ccc3cfe4d4c427ebb4a3682ad8609b2,LRRC32-AS1:7e05274c1c1a4742b1aaaf7f47d01212,RPL35P3:74a6878e1f064e78b5c1560e5e3e29c6,B95.62:69d46b14a4644b2098cb13cf226b04ea,UBERON:0000086:a316e6581ee444788c82ea9610632577,E56.9:642360e3727e45829c895202b2176202,EYA4-AS2:603cd3c57f37429bbadafa274c8c6950,IGKV2-4:e87c1508156c416bb5a9a7f0f3646c2f,Likely Benign:01a8f7e6b54246f1b0373038024fb976,SNORD114-17:66ab46206d1d493e9ce03e472d706711,RPS6KB2:bb0b1519c8fe4638981e2b5e45244107,BNC1:49431c2831c841b2a8d79a6fe86b9c0e,9920/3:4aac7d04313e4dceb1faeef75cf82cef,R62.59:1cab3f0b5da240bcb51c5f9308b3dafb,F60.7:caaf76909fef4b26814e35077d78cd23,ACTL8:9336405a7ba546aba36e48712568500d,C39574:a9c9e5efb67446e096b4e798b62bb1b9,ATPAF1:c11cd8d10164489f859a6b167a050c1e,RRM2P4:757726d473ed43e6bc6a039ef6896880,C175669:e810cf58af494393907adb782589a675,COL4A2:da7806ee12fd48cfb3ff467d5564dae8,C27040:582815f4bd984fc8a54896b9ce8574f8,C203526:85290b9d32964c81a9f1738a5014a0b2,C127169:52f2dae4758b432abd0354c69f3c44bf,TRN-GTT13-1:821c76239b244bd5b156d03f3998c4f5,Anti-mesothelin Antibody-drug Conjugate SGN-MesoC2:f2fdaa8ab7ee4fe1a8cb39eae7476abf,RNU7-47P:ea2a71ac22ae48c4b95a9f24ae5a3911,Sudocetaxel Zendusortide:d2ac574ba1ab4fdc9b04ab52198dfc42,PPP1R37:0f661a8def1d45e0acd0bcdbee305b9c,PLCB1:7e291fed9026446bbd60e4202667e871,UTP15:686101a6bb7b4b77874eff3315f84193,METTL5P1:5033b3a41bb543458402a00b403d27fc,C168981:d26f2e370d214d56ba84359a1fdd3797,Microfluidics:3b51b9dc0bd243bc8574cfc1094509f3,C173809:8323d89f60844329a52c2b0d84ffba64,ABCA8:3c8f4175faf04670bc79fa56c1452f32,T24.539:308828c6089d478b8e6d93e025ad8077,DNMT1:b43f8fcb0c3a41ab97b3bbb287e5730c,C8160:48ba856521c24fd98f792027f3bf509f,G40.833:0d75e66d75d1402fa41cd252e2905aa4,T23.792:3e6789e2d3dc47819c4d9876a8418c5c,C6454:ab9ba31f7b6246b99451f391b3ec7529,RNU7-138P:1bc86e8f1e34444d8c2993bdb8daabb6,Squeezed Red Blood Cells Expressing HPV16 Epitopes SQZ-AAC-HPV:a946da08e13e41a5a825e196f0a30e14,TARID:4342e42e3da3465795b26003c81cfbfe,STUB1:95711eca73b64131a739a83224e07943,CDK7 Inhibitor LY3405105:88078f90cb6a484cb74467d2f8bc6930,STXBP4:3c843e4d05014c83b2d562ffb71c37f4,SPSB4:d95e3c375de142f18267d66f0b6bb856,MIR449B:5ecfaafcd4de4f1ca6c5ff086a23a445,MYO6:5667de509fa3461b8d74527e4926edcf,Autologous BCMA-targeted CAR T Cells CC-98633:7abd39a4b8844d8ea43a1ce6f97c7431,CD300LD:f7e94c256f244c19a1857c5328f14708,T85.630:80bf660b5df748e988e42d1405bf1d11,C5005:a522d262341f4aa28a53ba59757a4164,STING Agonist MK-2118:e964337e9ccb45dd824c301c249f87d5,LINC02907:de8644d2b11e45aab759fd4900ad3eba,C168673:e188fea5ed254b86b74ab4eb3215f251,UBERON:0016938:ad43d02e809b4a7cb22350821b82e245,C6056:7abe7a70950543ae9c9d82aedad66351,L52:b540b997666d4a36877d3941fabc42e2,LAP3:3db9836832254906b2c3b98308378928,RN7SL619P:aee5e8835b6642bda977afd5c8000206,UBERON:2005211:69b21db04fef4afaa4be710ee9c58fc5,LPP-AS2:94791e11f5b741eebc7162cc78ccd92b,C48280:576b2291df544f98bffb51c5a0ca7848,C213859:0be9c3c150dd42318b4f005e56af97af,UBERON:0013462:9be68b1bd4464aef871e4b8bd893c26b,C168177:24bbb0b0b2d4423f9c09e2eaa6adcefc,Vorsetzumab Mafodotin:6f70ad3d09a043b8bacfcc5d5e1466bb,C191612:571eebadc8854503a08633ff8209292e,I70.341:cce0f041b05b4270a34ad68602cfd517,C8772:89af3d178a34427c9df623c34cdfe26b,S92.06-:8565877d01454fefbcf91fc23b630e2e,MCRIP2P1:251d155e8eab4541beda47af4061d459,KIF2A:3e20ef8b06dc418f8478059c7e56543c,Huang Lian:abdde3f1924049b9b7b553520bdbda75,C84417:5c657efa1d954b73a72f6eb3399f2c89,G71.19:02125c91c0d846beab669ac1eb4d217f,C9356:63e03177adb644d3925925256ff22369,K44.1:d465d1de032b484b818f39b606cae5f8,ASNSP6:4374adf5d3f34024ad734e7074d11a7a,MICOS10P1:d1ed54813aea403492ce7e02ecb43a11,C35608:c5864c37c91c4dadb139cd066f8ea749,H02.159:d55847b6621d44caa1c1db4fdfb8858d,C9405:5a2be651de4243a08e91dccc750c5710,IGFN1:a09dfdcc261241488fb105cd3caf9ed4,M84.9:b962744097f44ffb9ba6f191af7f8715,HMGB3P25:7a6528adcfc94d759eeb0bfc4fdc85f1,H31.00-:5aa59870ef9f42e98d8f076f7ee6fa82,UBERON:0013192:9543853a1c6e4c9aada85e0d89c47b03,IKBKG:d6f103bebbd24b4b8646d5d3aa4f8a31,HNRNPA1P50:13f95441bdf74957a967394234a14e38,UBERON:0007724:e07b516dde014fc9bcfdac116f85ab83,UBERON:0000429:cd905aafdb0b4e3d9c5a78d1d009da1e,MYH1:d7a65ed7d6a04ec69fc1a29f6327ec88,C39987:775862c397af4459afdc52ecbb90faa8,C4255:3a39cf1f330a47c394b8493dfc4dbbde,ZNF557:8910984f8d7e4a43891dc764644737a6,Study entry (+/- 4 weeks):ff8c1b2b29ab4c6fb9560b9046a9de3a,C40214:1a29bce9af934163b50b4d60b2d7bf71,S26.021:fe07e64984284521a7bb9d45819b6307,C165535:7588c2718875430abb866b8ca79f1cd0,End of Post-Consolidation (Arms A and D):103de7aab3f040399a0354f748d8a991,BNIP1:db08ab01c6544638b61de6a9943e4ea7,M99.14:b0d738277fd548738fa9acceb669ca30,C3188:46572083f88f4c1d9ab3041ac365fa64,Epratuzumab-cys-tesirine:f2791b091ddb4727bf47878071828f86,LINC00582:f084b45cc919472180085f93a002f95f,T22.339:d2ba682f74514dc0a3becb049539da05,UBERON:0002912:28f325c4cd714c4e91b60efa99016d5f,ATOSB:f14a4963ae2a464da895dd07f85d789f,C179205:8fb8804afec6424297dd71b6afef3bd1,S72.44-:64ac5ab1dc7f4edeb9b026b6170fbc16,O35.19:7ddecd872bba4ae8a2d08ddcaf97ad45,Kallikrein Inhibitor MDPK67b:f2c5a055ed0140ad8c8ad25bd9d9049d,T22.459:2cbafcf9533f4b3abed2dc1978d237f3,UBERON:0014699:05c432e731534a97ada730b66ede7ea5,C176820:70a2edc9d7ec420bb9f03746a45aab1f,C7143:bf881eada2e844d7a726e44e27d3f0b3,I69.03-:f71f954b49d24242863e4c18f7f1f82a,Allogeneic Anti-BCMA CAR T Cells ALLO-605:c9cb37d9e6744a28a549082da37dd522]\"}}",
+            "type": "text"
+          }
+        ],
+        "is_error": false,
+        "tool_use_id": "mcptoolu_017oWNRgqVJHJuB2w92F5GfL",
+        "type": "mcp_tool_result"
+      },
+      {
+        "citations": null,
+        "text": "The project appears to be a biomedical/NF (Neurofibromatosis) research project. The sample fields (`transactionId`, `amount`, `currency`, `merchantId`, `settledAt`) look financial \u2014 very different from what's in this project. Let me search more specifically for any financial or transaction-related types/elements.",
+        "type": "text"
+      },
+      {
+        "id": "mcptoolu_01FATBSC8zUbnsJ1TWGk9sCk",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "code": "\n// Search for nodes related to the sample's fields\nconst searches = await Promise.all([\n  tools.graph_search_nodes({ expression: \"transaction\", pageSize: 20 }),\n  tools.graph_search_nodes({ expression: \"payment\", pageSize: 20 }),\n  tools.graph_search_nodes({ expression: \"merchant\", pageSize: 20 }),\n  tools.graph_search_nodes({ expression: \"currency\", pageSize: 20 }),\n  tools.graph_search_nodes({ expression: \"amount\", pageSize: 20 }),\n  tools.graph_search_nodes({ expression: \"settled\", pageSize: 20 }),\n]);\nreturn searches.map((s, i) => ({ query: i, total: s.total, items: s.nodes }));\n"
+        },
+        "name": "run_code",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "Tool 'graph_search_nodes' is not available in code mode.",
+            "type": "text"
+          }
+        ],
+        "is_error": true,
+        "tool_use_id": "mcptoolu_01FATBSC8zUbnsJ1TWGk9sCk",
+        "type": "mcp_tool_result"
+      },
+      {
+        "id": "mcptoolu_01FEKTz5rnNAHpi2hBCoyPL3",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "expression": "transaction",
+          "pageSize": 20
+        },
+        "name": "search_nodes",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "{\"format\":\"node:[id,label,nodeType,[spaceIds]]\",\"nodes\":[],\"page\":1}",
+            "type": "text"
+          }
+        ],
+        "is_error": false,
+        "tool_use_id": "mcptoolu_01FEKTz5rnNAHpi2hBCoyPL3",
+        "type": "mcp_tool_result"
+      },
+      {
+        "id": "mcptoolu_01KYHZoBBextmb1R34969zVx",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "expression": "payment",
+          "pageSize": 20
+        },
+        "name": "search_nodes",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "{\"format\":\"node:[id,label,nodeType,[spaceIds]]\",\"nodes\":[],\"page\":1}",
+            "type": "text"
+          }
+        ],
+        "is_error": false,
+        "tool_use_id": "mcptoolu_01KYHZoBBextmb1R34969zVx",
+        "type": "mcp_tool_result"
+      },
+      {
+        "id": "mcptoolu_01VzC4PTbXvP1AXn41ovXMMn",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "expression": "merchant",
+          "pageSize": 20
+        },
+        "name": "search_nodes",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "{\"format\":\"node:[id,label,nodeType,[spaceIds]]\",\"nodes\":[],\"page\":1}",
+            "type": "text"
+          }
+        ],
+        "is_error": false,
+        "tool_use_id": "mcptoolu_01VzC4PTbXvP1AXn41ovXMMn",
+        "type": "mcp_tool_result"
+      },
+      {
+        "id": "mcptoolu_014mg4VJDhDU9D1pRryEw8fz",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "expression": "currency",
+          "pageSize": 20
+        },
+        "name": "search_nodes",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "{\"format\":\"node:[id,label,nodeType,[spaceIds]]\",\"nodes\":[],\"page\":1}",
+            "type": "text"
+          }
+        ],
+        "is_error": false,
+        "tool_use_id": "mcptoolu_014mg4VJDhDU9D1pRryEw8fz",
+        "type": "mcp_tool_result"
+      },
+      {
+        "id": "mcptoolu_01AGi9kk8RR6evK9NhWczVJq",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "expression": "amount",
+          "pageSize": 20
+        },
+        "name": "search_nodes",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "{\"format\":\"node:[id,label,nodeType,[spaceIds]]\",\"nodes\":[],\"page\":1}",
+            "type": "text"
+          }
+        ],
+        "is_error": false,
+        "tool_use_id": "mcptoolu_01AGi9kk8RR6evK9NhWczVJq",
+        "type": "mcp_tool_result"
+      },
+      {
+        "id": "mcptoolu_017E4k468tJAodCr6XCLjQeo",
+        "input": {
+          "graphProjectId": "80215e05a1ba4dd8a37e0a21a2f39605",
+          "expression": "settled",
+          "pageSize": 20
+        },
+        "name": "search_nodes",
+        "server_name": "graph",
+        "type": "mcp_tool_use"
+      },
+      {
+        "content": [
+          {
+            "citations": null,
+            "text": "{\"format\":\"node:[id,label,nodeType,[spaceIds]]\",\"nodes\":[],\"page\":1}",
+            "type": "text"
+          }
+        ],
+        "is_error": false,
+        "tool_use_id": "mcptoolu_017E4k468tJAodCr6XCLjQeo",
+        "type": "mcp_tool_result"
+      },
+      {
+        "citations": null,
+        "text": "All six targeted searches return **zero results**. The evidence is conclusive. Here is my finding:\n\n---\n\n## \u274c No Matching Schema Found\n\n**No schema in project `80215e05a1ba4dd8a37e0a21a2f39605` matches the provided sample.**\n\n### What the sample contains\n| Field | Value |\n|---|---|\n| `transactionId` | `\"txn_abc123\"` |\n| `amount` | `149.99` |\n| `currency` | `\"USD\"` |\n| `merchantId` | `\"merch_xyz\"` |\n| `settledAt` | `\"2026-04-28T10:00:00Z\"` |\n\nThese are clearly **financial / payment-settlement** fields.\n\n### What the project actually contains\nThe project (`80215e05a1ba4dd8a37e0a21a2f39605`) is a **biomedical research schema** \u2014 specifically a **Neurofibromatosis (NF) data model** hosted on the Synapse platform. Its types, elements, and taxonomies cover domains such as:\n- Clinical templates (biospecimen, genomics, proteomics, imaging, etc.)\n- Medical ontologies (UBERON anatomy codes, ICD/ICD-O codes, gene symbols)\n- Research metadata (assay types, sequencing workflows, study/publication records)\n\n### Exhaustive search performed\nSearches for `transaction`, `payment`, `merchant`, `currency`, `amount`, and `settled` all returned **0 nodes** across all node types (Types, Elements, Taxonomies).\n\n### Conclusion\n> **Under Rule 3: No schema in scope matches this sample. Do not use this project's schema to validate or describe the provided JSON. The sample appears to belong to a financial/payments domain that is entirely absent from this project.**",
+        "type": "text"
+      }
+    ],
+    "context_management": null,
+    "model": "claude-sonnet-4-6",
+    "role": "assistant",
+    "stop_details": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 18107
+      },
+      "cache_creation_input_tokens": 18107,
+      "cache_read_input_tokens": 159437,
+      "inference_geo": "global",
+      "input_tokens": 263,
+      "iterations": null,
+      "output_tokens": 1634,
+      "server_tool_use": {
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "speed": null
+    }
+  },
+  "error": null
+}

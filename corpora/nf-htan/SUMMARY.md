@@ -2,233 +2,249 @@
 
 > Results summary for the structured-context-retrieval benchmark: measurements, plots, and methodology notes. Updated as the test matrix fills in.
 
-> **Provenance.** All results in this document were collected in **April 2026** against the then-current CoreModels graph and the schema set of that date — specifically **HTAN2 v1.1.0** plus the NF-OSI dictionary as it stood then. The corpus has **since moved to HTAN2 v1.2.0** (and the NF-OSI dictionary has grown), and the MCP graph has been re-synchronized, so these figures are a **point-in-time snapshot on a previous schema version**, not a measurement of the current corpus. The thesis-level findings do not depend on the specific schema version or tool surface.
+> **Provenance — read before quoting any number.** This corpus was filled in three waves:
+>
+> - **April 2026** — opus-4-7 and haiku-4-5 on samples (a)–(d), against **HTAN2 v1.1.0** and the then-current MCP tool surface (`core_models_project_content_summary`, `core_models_fetch_node`, …).
+> - **July 2026** — haiku-4-5 on sample (e) `underdetermined`, against HTAN2 v1.2.0, field order shuffled per rep.
+> - **Sept 2026** — sonnet-4-6 across all five samples, plus opus-4-7 on (e). Against HTAN2 v1.2.0 and a **re-synchronized MCP graph with a different tool surface** (`get_project_summary`, `search_nodes`, `list_projects`, `run_code`).
+>
+> The schema-version drift (v1.1.0 → v1.2.0) is cosmetic and does not confound tier comparisons. **The MCP tool-surface change does**: the April MCP cells and the Sept MCP cells did not query the same tool set. Model-tier comparisons *within* the Sept wave (opus vs sonnet on `underdetermined`) are clean; MCP comparisons *across* waves are not.
 
 ## Thesis
 
 **Structured Context Retrieval (SCR)** — traversing a typed semantic graph at runtime via MCP — should produce materially better behavior than unstructured retrieval (raw GitHub URLs, local ZIPped schema files) on three properties: **token efficiency, determinism, and accuracy under under-claim discipline**.
 
-This document reports how the data supports or refutes that thesis. Token efficiency (Test 1) and accuracy / abstention (Test 3) are measured in full; determinism (Test 2) holds at the answer level (100% identical `predicted_schema`), with cost-variance reported alongside pending a dedicated strip plot.
+This document reports how the data supports or refutes that thesis. As of the Sept 2026 wave the honest verdict is: **determinism holds and is stronger than we thought, accuracy is non-monotonic in model tier, and token efficiency does not survive correct cost accounting.**
 
 ## Current scope
 
-| Dimension | Measured so far | Full matrix target | Status |
+| Dimension | Measured | Full matrix target | Status |
 |---|---|---|---|
-| Sample types | exact, ambiguous, foreign, chimeric | exact, ambiguous, foreign, chimeric | **4/4** |
+| Sample types | exact, ambiguous, foreign, chimeric, underdetermined | same 5 | **5/5** |
 | Variants | mcp, url, zip | mcp, url, zip | 3/3 |
-| Models | claude-opus-4-7, claude-haiku-4-5 | opus-4-7, sonnet-4-6, haiku-4-5 | 2/3 |
+| Models | opus-4-7, sonnet-4-6, haiku-4-5 | opus-4-7, sonnet-4-6, haiku-4-5 | **3/3** |
 | Reps per cell | 3 | 3 | OK |
-| **Total runs** | **72** | **108** | 67% |
+| **Total runs** | **135** | **135** | **100%** |
 
-Grader is `claude-opus-4-7` at `temperature=0` for every grading call across every variant and every model under test. Self-grading bias is intentionally accepted because it is *constant* across the comparison and therefore cancels out when comparing variants or models — disclosed as a reproducibility note.
+Every one of the 135 rows is `status=graded`; there are no error rows in the manifest. Grader is `claude-opus-4-7` at `temperature=0` for every grading call across every variant and model. Self-grading bias is intentionally accepted because it is *constant* across the comparison and therefore cancels when comparing variants or models — disclosed as a reproducibility note.
 
 ## Retrieval scenarios (variants under test)
 
-- **`mcp`** — CoreModels MCP server. The model traverses the typed schema graph at runtime via tools like `core_models_project_content_summary` and `core_models_fetch_nodes`. The Anthropic API handles the MCP tool-use loop server-side, so one client API call covers an arbitrary-length traversal. *(Tool surface as of April 2026; the singular node-fetch tool has since been removed from the MCP — see the provenance note above.)*
-- **`url`** — GitHub URLs (`ncihtan/htan2-data-model`, `nf-osi/nf-metadata-dictionary`) via `web_search` + `web_fetch` (server-side) plus a sandboxed `run_bash` (client-side). Mirrors a real coding-agent toolbox — Claude Code / Cursor expose all three and let the model pick.
+- **`mcp`** — CoreModels MCP server. The model traverses the typed schema graph at runtime. The Anthropic API handles the MCP tool-use loop server-side, so one client API call covers an arbitrary-length traversal. *(Tool surface differs between the April and Sept waves — see provenance.)*
+- **`url`** — GitHub URLs (`ncihtan/htan2-data-model`, `nf-osi/nf-metadata-dictionary`) via `web_search` + `web_fetch` (server-side) plus a sandboxed `run_bash` (client-side). Mirrors a real coding-agent toolbox.
 - **`zip`** — local extracted schemas in `fixtures/zip/`. The model has only a `run_bash` tool, sandboxed to read-only operations on the schema directory with network blocked.
 
 All three variants share the same model, same `max_tokens`, same system prompt. Only the tool surface and the prompt body differ.
 
 ## Sample types tested
 
-Each sample probes a different failure mode the benchmark was designed to catch:
-
 | Sample | Payload | Correct behavior | Predicted failure mode |
 |---|---|---|---|
-| **(a) exact** | All 5 fields are present in NF-OSI `BiospecimenTemplate` (`individualID`, `parentSpecimenID`, `specimenID`, `aliquotID`, `tumorType`) | Commit to `BiospecimenTemplate`, cite path/ID | Confabulate, pick a wrong schema, or fail to commit |
-| **(b) ambiguous** | Shared identifier fields (`individualID`, `specimenID`, `aliquotID`) appear in `BiospecimenTemplate` AND in 27+ NF assay templates, plus one disambiguating field (`bodySite`) unique to BiospecimenTemplate | Use `bodySite` to commit to `BiospecimenTemplate` | Pattern-match on shared identifiers and pick a wrong assay template (`GenomicsAssayTemplate` / `RNASeqTemplate` / `WGSTemplate`). This is where the "look up before you make up" claim is supposed to cash out. |
-| **(c) foreign** | Financial-transaction fields (`transactionId`, `amount`, `currency`, `merchantId`, `settledAt`) — completely outside the NF-OSI / HTAN2 universe | Decline; declare no match | Invent a schema or force-fit financial fields onto an unrelated biomedical schema |
-| **(d) chimeric** | NF-OSI camelCase (`individualID`, `tumorType`) mixed with HTAN `SCREAMING_SNAKE_CASE` IDs (`HTAN_BIOSPECIMEN_ID`, `HTAN_PARENT_ID`) in one payload | Flag inconsistency; name both candidate schemas (`BiospecimenTemplate` and `BiospecimenData`) | Silently commit to one schema and drop the conflicting fields |
+| **(a) exact** | All 5 fields present in NF-OSI `BiospecimenTemplate` | Commit to `BiospecimenTemplate`, cite path/ID | Confabulate, pick a wrong schema, or fail to commit |
+| **(b) ambiguous** | Shared identifiers in 27+ templates, plus `bodySite` unique to BiospecimenTemplate | Use `bodySite` to commit | Pattern-match on shared identifiers, pick a wrong assay template |
+| **(c) foreign** | Financial-transaction fields, outside the universe | Decline; declare no match | Invent or force-fit a schema |
+| **(d) chimeric** | NF camelCase mixed with HTAN `SCREAMING_SNAKE` in one payload | Flag inconsistency; name both candidates | Silently commit to one and drop conflicting fields |
+| **(e) underdetermined** | `{individualID, specimenID, aliquotID}` only — co-occur in **29 of 93** templates, no disambiguator | **Decline or narrow** | Commit anyway (false confidence) |
 
-The grader is told the per-sample expected behavior and (for sample b) the disambiguator field via the sample's `expected.grading_note`, so it can mark "committed correctly but didn't cite the disambiguator" differently from "committed correctly and cited the disambiguator".
+The grader is told the per-sample expected behavior and (for sample b) the disambiguator via `expected.grading_note`.
 
-## Headline result — tokens-to-correct (Test 1)
+## ⚠️ Cost metric changed (Sept 2026) — earlier figures were wrong
 
-Mean `total_tokens` on **correct** runs, per `(model, variant, sample_type)`. Plots: [exact](results/plots/tokens_to_correct__exact.png), [ambiguous](results/plots/tokens_to_correct__ambiguous.png), [foreign](results/plots/tokens_to_correct__foreign.png), [chimeric](results/plots/tokens_to_correct__chimeric.png) — all grouped by model.
+Every token figure below is **`billed_tokens`** = `input + output + cache_read + cache_creation`.
 
-### Opus 4.7 (n=3 per cell)
+Previous versions of this document reported `total_tokens`, which the run record defines as **input + output only**. That excluded prompt-cache traffic. The MCP variant runs its tool loop server-side and bills nearly all of that traffic as cache reads/writes, so the old metric counted roughly **3% of what an MCP run actually consumed** — one MCP run showed 4,500 `total_tokens` against 148,120 billed. The old figures systematically flattered MCP.
 
-| Sample | mcp | zip | url | mcp wins by |
-|---|---:|---:|---:|---:|
-| exact | 2,789 | 25,619 | 43,783 | 9–16× |
-| ambiguous | 2,693 | 17,736 | 30,601 | 7–11× |
-| foreign | 1,697 | 15,130 | 11,848 | 7–9× |
-| chimeric | 5,250 | 25,075 | 25,062 | ~5× |
+`metrics.py` now exposes three measures, all derived from fields already present in every record, so they apply retroactively to runs collected before the metric existed:
 
-### Haiku 4.5 (n varies — only correct runs counted; see correctness section below)
+- **`billed_tokens`** — every billed token. Price-independent. **Default.**
+- **`cost_usd`** — price-weighted at list rates, with cache writes at 1.25× and cache reads at 0.1× the base input rate. This is what the "cheaper" claim actually rests on.
+- **`in_out`** — reproduces the old cache-blind figure, retained so prior numbers remain checkable.
 
-| Sample | mcp (n) | zip (n) | url (n) | notes |
+**Tokens and dollars disagree, and the disagreement is the point.** MCP moves far more tokens than the old metric showed, but the bulk of them are cache *reads*, billed at a tenth of the input rate. MCP is token-heavy and dollar-light. Quote whichever suits the claim — just never quote `in_out` again.
+
+## Headline result — cost-to-correct (Test 1)
+
+Mean over **correct** runs only. Plots: [exact](results/plots/tokens_to_correct__exact.png), [ambiguous](results/plots/tokens_to_correct__ambiguous.png), [foreign](results/plots/tokens_to_correct__foreign.png), [chimeric](results/plots/tokens_to_correct__chimeric.png), [underdetermined](results/plots/tokens_to_correct__underdetermined.png).
+
+### Opus 4.7 — billed tokens (n=3 per cell)
+
+| Sample | mcp | zip | url | cheapest |
 |---|---:|---:|---:|---|
-| exact | 4,377 (3) | 59,865 (3) | 43,148 (1) | URL only correct on 1/3 reps |
-| ambiguous | 4,477 (2) | 115,198 (3) | — (0) | URL **0/3 correct** — no token entry |
-| foreign | 3,822 (3) | 53,894 (3) | 13,408 (3) | easiest sample for everyone |
-| chimeric | 5,956 (2) | — (0) | 88,368 (1) | ZIP **0/3 correct** (hit `MAX_TURNS=25`) |
+| exact | 65,766 | **32,131** | 158,966 | zip |
+| ambiguous | 68,416 | **28,309** | 88,334 | zip |
+| foreign | 32,271 | **16,954** | 31,228 | zip |
+| chimeric | 102,490 | **40,937** | 57,339 | zip |
+| underdetermined | 146,857 | **19,082** | 81,754 (n=2) | zip |
+
+### Opus 4.7 — cost USD
+
+| Sample | mcp | zip | url |
+|---|---:|---:|---:|
+| exact | $0.2834 | **$0.1879** | $0.4393 |
+| ambiguous | $0.1846 | **$0.1466** | $0.3180 |
+| foreign | $0.1604 | **$0.1133** | $0.1550 |
+| chimeric | $0.3360 | **$0.1998** | $0.2429 |
+| underdetermined | $0.3573 | **$0.1302** | $0.3618 (n=2) |
+
+**On Opus 4.7 the old headline inverts.** The April document claimed MCP was 5–16× cheaper than ZIP. Counted honestly, **ZIP is cheaper than MCP on every sample type, on both tokens and dollars** — by 1.3–7.7× in tokens and 1.3–2.7× in dollars. The old 5–16× figure was an artifact of not counting cache traffic.
+
+### Sonnet 4.6 and Haiku 4.5 — cost USD (correct runs only)
+
+| Sample | sonnet mcp | sonnet zip | sonnet url | haiku mcp | haiku zip | haiku url |
+|---|---:|---:|---:|---:|---:|---:|
+| exact | **$0.2229** | $0.3191 | $0.4254 | **$0.0512** | $0.1984 | $0.1183 (n=1) |
+| ambiguous | **$0.1746** | $0.2857 | $0.5138 | **$0.0590** (n=2) | $0.1647 | — (0) |
+| foreign | $0.1139 | **$0.0699** | $0.6658 | $0.0554 | $0.0625 | **$0.0528** |
+| chimeric | **$0.1989** (n=1) | $0.6451 | $0.4435 | $0.0815 (n=2) | — (0) | $0.1512 (n=1) |
+| underdetermined | — (0) | $0.2268 (n=2) | — (0) | $0.0646 (n=1) | — (0) | $0.1439 |
 
 **Read:**
-- Opus 4.7: MCP costs *5–16× fewer tokens* than URL/ZIP for the same correct answer on every sample type. Cost-only story; accuracy is parity.
-- Haiku 4.5: MCP is *5–25× cheaper* than the variants that *can* produce a correct answer — but on hard samples URL and ZIP often *can't*. The story shifts from cost-only to cost+accuracy. See "Hallucination + abstention" below.
-- ZIP-Haiku-ambiguous's stdev (58,411 tokens, with mean 115,198) means one rep alone burned ~166K tokens to land the answer — Haiku scans the whole filesystem when it's unsure.
 
-**Honorable mention — Opus chimeric stdev=91 (MCP).** Three reps came in at 5,237 / 5,166 / 5,347 tokens — within a 200-token band. The cost determinism story is sharpest at this single point.
+- **The cost story is tier-dependent, and it reverses.** MCP is the cheapest surface on haiku and mostly on sonnet, and the *most expensive* on opus. MCP's spend is dominated by a large, nearly fixed volume of cached graph context; that fixed cost is cheap at haiku's input rate and expensive at opus's. The cheaper the model, the better MCP looks.
+- **Empty cells carry more weight than the numbers beside them.** `sonnet url underdetermined` has no cost entry because it was **0/3 correct**. Cost-to-correct is undefined where nothing is correct.
 
-## Hallucination + abstention (Test 3 — full)
+## Correctness (Test 3)
 
 Plot: [results/plots/correctness_by_model.png](results/plots/correctness_by_model.png).
 
-### Per-cell correctness (out of 3 reps each)
+### Per-cell correctness (out of 3 reps)
 
-| Sample | mcp opus | mcp haiku | url opus | url haiku | zip opus | zip haiku |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| exact | 3/3 | 3/3 | 3/3 | **1/3** | 3/3 | 3/3 |
-| ambiguous | 3/3 | 2/3 | 3/3 | **0/3** | 3/3 | 3/3 |
-| foreign | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
-| chimeric | 3/3 | 2/3 | 3/3 | **1/3** | 3/3 | **0/3** ⚠️ |
-| **total** | **12/12** | **10/12** | **12/12** | **5/12** | **12/12** | **9/12** |
+| Sample | opus mcp | opus zip | opus url | sonnet mcp | sonnet zip | sonnet url | haiku mcp | haiku zip | haiku url |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| exact | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | **1/3** |
+| ambiguous | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 2/3 | 3/3 | **0/3** |
+| foreign | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| chimeric | 3/3 | 3/3 | 3/3 | **1/3** | 3/3 | 3/3 | 2/3 | **0/3** | **1/3** |
+| underdetermined | 3/3 | 3/3 | 2/3 | **0/3** | 2/3 | **0/3** | **1/3** | **0/3** | 3/3 |
+| **total** | **15/15** | **15/15** | **14/15** | **10/15** | **14/15** | **12/15** | **11/15** | **9/15** | **8/15** |
 
-### Hallucinations
+### MCP's effect on accuracy is non-monotonic in model tier
 
-- **Opus 4.7**: **0 hallucinations** across all 36 runs. The predicted "URL/ZIP confabulate" failure mode did not materialize at this tier.
-- **Haiku 4.5**: **3 hallucinations** — mcp(1) + url(2) + zip(0). All three land on the hardest sample, `chimeric`; on `exact`, `foreign`, and (once corrected — see below) `ambiguous`, Haiku did not confabulate.
-  - **mcp — 1**: *chimeric* rep1 — correctly flagged inconsistency but named the **wrong second schema** (`nf-platebasedreporterassaytemplate`, a real NF template, in place of HTAN BiospecimenData).
-  - **url — 2**, both on *chimeric* (rep1, rep3) — **committed to `HTAN BiospecimenData`** and ignored the NF/HTAN field mix instead of flagging it.
-  - **Not hallucinations (under-claiming or graph noise):**
-    - url `exact` / `ambiguous` (5 runs) — *appropriate abstentions* (`decline` / `narrow` / `flag_inconsistency`, `hallucinated=false`, no fabricated schema). Haiku got them wrong by **under-claiming**, not by making something up; the predicted "commit to a `wrong_but_tempting` assay template" mode did not appear even on Haiku.
-    - mcp `ambiguous` rep1 — **over-narrowing, not fabrication.** It returned a candidate list (`BiospecimenTemplate` + a stray project node that was *temporarily* mis-titled `"biospecimen 21 23"`) instead of committing via `bodySite`. That node was **real graph noise** — a title since reverted in the project — not a model invention, so it is *not* counted as a hallucination. (A genuine SCR signal: stray/mislabeled graph nodes can pull a weak model into over-narrowing — a data-quality issue, not a model one.)
-  - **zip — 0.** Its chimeric failures were turn-exhaustion, not hallucination (below).
+Rank of MCP among the three surfaces, by total correctness:
+
+| Model | mcp | zip | url | MCP rank |
+|---|---:|---:|---:|---|
+| opus-4-7 | 15/15 | 15/15 | 14/15 | best (tied) |
+| sonnet-4-6 | **10/15** | 14/15 | 12/15 | **worst** |
+| haiku-4-5 | **11/15** | 9/15 | 8/15 | **best** |
+
+This is the most important finding in the corpus, and it was invisible before the middle tier existed. The April write-up projected a smooth story — MCP helps more as the model gets weaker. The data does not do that. MCP is the best surface for haiku, the *worst* for sonnet, and a tie at opus.
+
+### Hallucinations — 18 across 135 runs
+
+| | mcp | zip | url | total |
+|---|---:|---:|---:|---:|
+| opus-4-7 | 0 | 0 | 1 | 1 |
+| sonnet-4-6 | **5** | 1 | 3 | 9 |
+| haiku-4-5 | 4 | 2 | 2 | 8 |
+| **total** | **9** | **3** | **6** | **18** |
+
+**MCP produces half of all hallucinations in the corpus.** 14 of the 18 land on `underdetermined` or `chimeric` — the two samples where the correct answer is to refuse or to flag rather than commit. The dominant failure is a confident commit to `BiospecimenTemplate`, the most salient template in the graph.
+
+### The refusal result — sample (e) `underdetermined`
+
+`{individualID, specimenID, aliquotID}` co-occur in 29 of 93 templates with no disambiguator. Correct behavior is decline or narrow. Behavior across the 9 runs per model:
+
+| Model | commits (wrong) | narrows/declines (right) |
+|---|---:|---:|
+| opus-4-7 | 1/9 | **8/9** |
+| sonnet-4-6 | **7/9** | 2/9 |
+| haiku-4-5 | 4/9 | 5/9 |
+
+Sonnet committed on **every** MCP and URL rep (0/3 and 0/3); only ZIP pulled it back to 2/3. Its retrieval was not at fault — it found the right element nodes — it skipped the *enumeration* step: checking which other types also contain all three fields. That is textbook satisficing, the failure mode `schema-identification.md` names as the primary way this task goes wrong.
+
+**Structured retrieval accelerates whatever disposition the model already has.** For a well-calibrated model it accelerates correct narrowing (opus: 3/3 on MCP). For an over-committer it accelerates a confident wrong answer (sonnet: 0/3 on MCP, 2/3 on ZIP). ZIP's filesystem scan incidentally exposes *how many* templates share the fields; the graph hands over one authoritative answer fast. **The claim "SCR improves refusal discipline" does not survive the middle tier as stated.**
 
 ### ⚠️ ZIP + Haiku + chimeric: abstention by exhaustion
 
-All 3 ZIP-Haiku-chimeric reps hit `MAX_TURNS=25` with `stop_reason="tool_use"` — Haiku kept calling `run_bash` searching for the right schema and never committed within the loop budget. Final text was empty; the grader marked them all `correct=False, hallucinated=False`. This isn't a hallucination, but it isn't a useful answer either — *it's the model giving up by running out of turns*.
-
-These could likely be recovered by raising `MAX_TURNS` to 40+, but the failure is itself a real signal: Haiku-class models can't navigate a flat directory of 86 schemas reliably enough to commit. We're keeping the failure on the record rather than tuning around it.
-
-### What this means
-
-The headline is a layered, tier-dependent story:
-
-1. *On a frontier model (Opus 4.7), all three variants reach correct answers — but MCP does it at 5–16× lower token cost.*
-2. *On a fast/cheap model (Haiku 4.5), MCP also rescues accuracy: URL drops to 5/12 (especially catastrophic on the disambiguator sample), ZIP drops to 9/12 (gets stuck on chimeric). MCP holds 10/12 with the structural shortcut.*
-3. *Sonnet 4.6 is the missing middle tier — it would tell us whether the accuracy gap widens gradually or stepwise as model capability drops.*
+All 3 ZIP-haiku-chimeric reps hit `MAX_TURNS=25` with `stop_reason="tool_use"` — haiku kept calling `run_bash` and never committed within the loop budget. Final text was empty; graded `correct=False, hallucinated=False`. Not a hallucination, but not a useful answer either. Likely recoverable by raising `MAX_TURNS` to 40+, but the failure is itself signal and is kept on the record rather than tuned around.
 
 ## Determinism (Test 2 — partial)
 
-`predicted_schema` is the same string in **100% of correct runs**, per variant per
-sample: the answer does not drift run to run. Only the *cost* of reaching it does.
+`predicted_schema` is the same string in **100% of correct runs**, per variant per sample: the answer does not drift. Only the *cost* of reaching it does.
 
-Cost variance — `stdev / mean` of `total_tokens` across the three reps, per variant
-per sample:
+Cost variance — `stdev / mean` of `billed_tokens` across reps, **Opus 4.7, correct runs**:
 
-| Variant | Stdev / mean (exact) | (ambiguous) | (foreign) | (chimeric) |
-|---|---:|---:|---:|---:|
-| mcp | 43% | 60% | 89% | **2%** |
-| zip | 9% | 21% | 12% | 16% |
-| url | 54% | 23% | 7% | 13% |
+| Sample | mcp | zip | url |
+|---|---:|---:|---:|
+| exact | **1%** | 20% | 70% |
+| ambiguous | **0%** | 30% | 43% |
+| foreign | **0%** | 8% | 2% |
+| chimeric | **2%** | 25% | 33% |
+| underdetermined | 27% | 20% | 21% |
 
-ZIP shows tight cost stability on most samples (disk scans of the same files produce nearly identical token counts). URL's variance is noisiest on `exact` because one rep spelunked through 4 candidate templates while the other two went straight to the answer. **MCP on chimeric is the standout** — three reps within a 200-token band of each other (5,237 / 5,166 / 5,347).
+**This is where SCR wins cleanly, and the corrected metric strengthens the case.** Under the old cache-blind measure MCP looked *noisy* (43–89% variance on three of four samples). Counting billed tokens shows the opposite: MCP's cost is near-perfectly reproducible — 0–2% on four of five samples — because the graph traversal is path-equivalent every time and the cached context is identical. The old metric was measuring the tiny uncached residue and mistaking its jitter for real variance.
 
-> Note: answer determinism is fully established (100% identical `predicted_schema`);
-> the percentages above are cost variance. A dedicated determinism strip plot
-> (Levenshtein/embedding spread of `final_text`) needs multiple `sample_id`s per
-> `sample_type`.
+> Answer determinism is fully established (100% identical `predicted_schema`); the percentages above are cost variance. A dedicated determinism strip plot (Levenshtein/embedding spread of `final_text`) needs multiple `sample_id`s per `sample_type`.
 
-## Per-sample observations
+## Per-sample observations (Opus 4.7, April wave)
 
-> Counts in this section are **Opus 4.7 (frontier tier)** — 9 runs per sample
-> (3 variants × 3 reps), which is why they read 9/9 with 0 hallucinations. The
-> Haiku-tier failures (including the 3 hallucinations) are covered in the
-> Hallucination section above.
+> Counts in this section are Opus 4.7 across 9 runs per sample (3 variants × 3 reps). Sonnet/haiku failures are covered above.
 
-### Sample (a) exact — `BiospecimenTemplate` with all five identifying fields
-- 9/9 correct. 0 hallucinations.
-- MCP rep 1 paid the cache miss (`input_tokens=2392`); reps 2–3 were 8 input tokens because the system prompt cached and the work happened MCP-server-side.
-- URL hit two 429s on rep 2; SDK auto-retried successfully (`max_retries=2` default) and the run completed without manual intervention.
-- ZIP took 8–9 `run_bash` calls per run with very tight variance (stdev 2,340).
+### Sample (a) exact
+- 9/9 correct, 0 hallucinations.
+- MCP rep 1 paid the cache miss (`input_tokens=2392`); reps 2–3 were 8 *uncached* input tokens — yet the run still billed ~65K. That gap is exactly the accounting error the new metric fixes.
+- URL hit two 429s on rep 2; the SDK auto-retried successfully.
 
-### Sample (b) ambiguous — same identifiers + `bodySite` as the disambiguator
-- 9/9 correct. **0 hallucinations.** No variant committed to a `wrong_but_tempting` assay template.
-- 8 of 9 grader notes explicitly cite `bodySite` as the disambiguator; the only outlier (zip rep 1) still committed correctly but cited "presence of all four fields" rather than naming `bodySite` specifically.
-- **On Opus 4.7, the accuracy story did not materialize as predicted.** The benchmark design hypothesized URL/ZIP would pattern-match on shared identifiers and pick `GenomicsAssayTemplate` / `RNASeqTemplate` / `WGSTemplate`. On Opus 4.7, all three retrieval surfaces reached the right answer with the right reasoning. The cost-to-correct delta still holds; the accuracy delta does not — until the model tier drops (see Haiku results above).
+### Sample (b) ambiguous
+- 9/9 correct, 0 hallucinations. No variant committed to a `wrong_but_tempting` assay template.
+- 8 of 9 grader notes explicitly cite `bodySite`; the outlier (zip rep 1) committed correctly but cited "presence of all four fields".
+- **The predicted accuracy story did not materialize at this tier** — all three surfaces reached the right answer with the right reasoning. It does materialize lower down (haiku url: 0/3).
 
-### Sample (c) foreign — financial-transaction fields, expected to decline
-- 9/9 correct. **0 hallucinations.** No variant invented a schema or force-fit financial fields onto a biomedical schema.
-- This is the cheapest sample for every variant — once you've looked at the field names, "no match" is fast to confirm. MCP reps 2 and 3 did it in **792 and 850 total tokens**.
-- Every grader note independently calls out the same failure mode that didn't happen ("financial fields have no analog in biomedical schemas"), confirming the model's reasoning was sound, not hand-wavy.
+### Sample (c) foreign
+- 9/9 correct, 0 hallucinations. Cheapest sample for every variant.
 
-### Sample (d) chimeric — NF camelCase + HTAN SCREAMING_SNAKE in one payload
-- **On Opus 4.7:** 9/9 correctly flagged inconsistency, **0 hallucinations** — no variant silently committed to one schema. *(On Haiku this was the weakest sample: url committed to `HTAN BiospecimenData` twice and mcp mis-cited the second schema once — see the Hallucination section.)*
-- All three variants identified the same disambiguator: case convention. URL/ZIP reps cite "camelCase NF-OSI fields vs SCREAMING_SNAKE_CASE HTAN fields"; MCP reps cite the same split via node IDs.
-- **MCP cost was the most consistent of any sample**: stdev=91 across three reps. The graph traversal is path-equivalent each time; URL/ZIP fan out differently per run.
-- MCP wall time was longer (avg 263s vs ~50–60s for URL/ZIP) — the API's server-side MCP loop did extra work to confirm the two-registry split.
-
-## A4 / refusal (under-determined input) — exploratory, July 2026
-
-> Added July 2026, separate from the April snapshot above and run against the current
-> corpus. A fifth sample type, **`underdetermined`**, is the mirror of sample (b): an
-> input that matches *many* in-scope templates with **no disambiguating field**, where
-> the correct behavior is to **refuse or narrow**, not commit. Committing to a single
-> schema is a false-confidence failure. haiku-4-5, 3 reps/variant, field order shuffled
-> per rep.
-
-**Sample (e) underdetermined** — `{individualID, specimenID, aliquotID}` only. These
-three identifier fields co-occur in **29 of the 93** templates (Biospecimen plus 28
-assay templates); unlike sample (b), no `bodySite` or other disambiguator is present.
-Correct = decline / narrow.
-
-| variant | reps | outcome |
-|---|---|---|
-| **mcp** | 3 | 2 false commit (`BiospecimenTemplate`), 1 correct narrow |
-| **url** | 3 | 3 "correct" (2 decline, 1 narrow) — but by retrieval **starvation** (it could not fetch the raw schema files), not by detecting ambiguity |
-| **zip** | 3 | 2 false commit (`BiospecimenTemplate`), 1 turn-exhaustion error (hit `MAX_TURNS=25`) |
-
-**Read:** on a **large** candidate set (29) in a **flat 93-file** directory, haiku
-rarely refuses correctly. The graph commits to the salient template; exhaustive file
-reading either commits to it too or runs out of turns enumerating. Only url "refused",
-and that was an artifact of failed retrieval rather than ambiguity detection. This is a
-model-calibration + candidate-set-size effect, not a clean surface ranking — contrast
-the **openEHR** corpus, whose under-determined sample has a small candidate set (3) in
-one folder, where exhaustive reading (zip) *does* refuse correctly while the graph
-over-commits.
-
-> **Methodology note — zip sandbox.** The first attempt at these zip runs was invalid:
-> the local `run_bash` sandbox could not find `bash` on PATH, so the model silently fell
-> back to guessing from memory while the harness still recorded an `ok` result. Fixed
-> (Git Bash on PATH); the affected runs were deleted and re-executed with real file
-> access (the numbers above). Hardening the sandbox to error loudly instead of degrading
-> silently is on the list.
+### Sample (d) chimeric
+- 9/9 correctly flagged inconsistency, 0 hallucinations.
+- All three variants identified the same disambiguator: case convention.
+- MCP cost was the most consistent of any sample (2% variance).
 
 ## Methodology notes and caveats
 
-Points that aren't visible in the headline charts but matter for interpreting them.
+### 1. The `graph_` code-mode name collision (Sept wave, MCP only)
 
-### 1. The ZIP variant assumes pre-extracted fixtures (Option A)
+The Anthropic MCP connector namespaces tools to the model as `<server_name>_<tool>`. With our `MCP_SERVER_NAME = "graph"`, the model's tool list reads `graph_search_nodes`, `graph_get_project_summary`, …. But CoreModels' `run_code` sandbox registers those same tools under **bare** names (`tools.search_nodes`). The two layers disagree by construction, and models paste the outer name into the inner sandbox.
 
-The headline ZIP number measures *retrieval* cost — once the schemas are on disk, how expensive is it for the model to find the right one?
+Measured across the corpus: **sonnet lost 26 of 34 `run_code` calls (76%)** to `Tool 'graph_X' is not available in code mode`; opus lost 1 of 6; haiku 1 of 1.
 
-We considered two alternative simulations and chose A as the fairest baseline:
+A controlled test (3 reps per condition) shows the prefix transfers only when it reads as a plausible namespace:
 
-- **Option B — ship the zip, model unzips at runtime** (what claude.ai web does — a sandbox is provisioned and the agent invokes `unzip` itself). Adds 1–3 extract-and-list calls per run before the schema-identification loop begins. More representative of "drop a zip into a chat" integrations, but the extraction cost isn't part of the retrieval claim. Worth recording as a caveat: an integration that also unzips should expect some extra tokens up front.
-- **Option C — inline every schema as text blocks in the user message**. No tools at all; the entire schema corpus rides in the prompt. Lower bound on cleverness, upper bound on context tokens. Implemented behind an `--include-raw` flag; not in the main charts.
+| server name | written inside `run_code` | rejected |
+|---|---|---|
+| `graph` | `graph_search_nodes` (3/3) | 3/3 |
+| `zzqq` | `search_nodes` (3/3) | 0/3 |
 
-### 2. Caching dynamics affect every variant
+So it is not mechanical namespacing — `graph` looks like a real module, `zzqq` looks like noise and gets dropped. **This inflated MCP token cost in the Sept wave but did not cause the accuracy failures**: the sonnet underdetermined runs ended `end_turn` at `turns=1` with budget to spare, and sonnet failed the same sample 0/3 on URL, where `run_code` does not exist. Renaming the server would fix it but changes the tool names in the prompt, so it requires a disclosed re-baseline rather than a quiet patch.
 
-MCP reps 2 and 3 had `input_tokens=8` because the system prompt was cached on rep 1. URL and ZIP only cache the system prompt; multi-turn tool-result content is uncached. A real, at-scale deployment of any non-MCP variant could close some of the gap with breakpoint-on-last-message caching — worth flagging so the MCP win isn't oversold.
+### 2. The ZIP variant assumes pre-extracted fixtures (Option A)
 
-### 3. Model resolution audit trail
+The headline ZIP number measures *retrieval* cost — once schemas are on disk, how expensive is it to find the right one? Alternatives considered: **Option B**, model unzips at runtime (adds 1–3 extract-and-list calls; more representative of "drop a zip into a chat"); **Option C**, inline every schema in the prompt (implemented behind `--include-raw`, not in the charts).
 
-Every run record includes `model_resolved` (the snapshot the alias resolved to at request time). All current runs resolved their aliases to a single snapshot. Pin to dated snapshots in `config.yaml` before the full benchmark run; the audit trail catches alias drift mid-experiment.
+### 3. Caching dynamics affect every variant
+
+URL and ZIP cache only the system prompt; multi-turn tool-result content is uncached. MCP caches the whole server-side loop. A real at-scale deployment of a non-MCP variant could close some of the gap with breakpoint-on-last-message caching — flagged so the MCP position is not overstated in either direction.
+
+### 4. Model resolution audit trail
+
+Every record includes `model_resolved` (the snapshot the alias resolved to). All runs resolved cleanly. Pin to dated snapshots before any further wave.
+
+### 5. The manifest does not deduplicate
+
+`load_runs` reads every JSONL line with no dedup by `run_id`, and the writer only appends. Re-running a cell with `--force` leaves **two** rows for the same `run_id` and both are counted. To re-baseline, archive the whole `results/` directory to a versioned sibling and start a fresh manifest — do not `--force` into the existing one.
 
 ## Reproducibility
 
-- Pin model versions to dated snapshots in `config.yaml` before the full benchmark run. Aliases drift; dated IDs do not.
+- Pin model versions to dated snapshots in `config.yaml`. Aliases drift; dated IDs do not.
 - Capture `response.model` per run into `model_resolved` so silent alias updates are visible.
 - For the URL variant, snapshot the GitHub commit SHA via `git ls-remote` per run (deferred).
-- No seed parameter exists for Claude; determinism comes from the absence of sampling parameters on Opus 4.7. The 3-rep design captures any residual variance.
-- Keep `results/raw/` and `results/runs.jsonl` under version control or archived — grading rules will evolve and re-grading against existing artifacts is expected.
+- No seed parameter exists for Claude; determinism comes from the absence of sampling parameters on Opus 4.7. The 3-rep design captures residual variance.
+- Keep `results/raw/` and `results/runs.jsonl` under version control — grading rules will evolve and re-grading against existing artifacts is expected.
+- Field-order shuffling is per-corpus and per-wave: samples (a)–(d) ran with `shuffle_field_order: false`, sample (e) with `true`. The flag must not be flipped mid-pass.
 
 ## What's still missing
 
-- **Sonnet 4.6** — the missing middle tier between Opus 4.7 and Haiku 4.5; needed to see whether the accuracy gap widens gradually or stepwise as model capability drops. Highest-value next experiment.
+- **An MCP re-baseline on a single tool surface.** The April and Sept MCP cells are not comparable. Until all three tiers are re-run against one surface, every cross-wave MCP claim carries an asterisk. Highest-value next experiment.
+- **Why sonnet over-commits.** The middle tier is worse than both its neighbours at refusal. Whether that is a sonnet-4-6 calibration quirk or a general mid-tier effect needs a second mid-tier model to separate.
 - Two still-missing charts: `determinism_strip.png` and `halluc_vs_abstain.png` — the strip plot needs multiple `sample_id`s per `sample_type`.
 - Standalone re-grading command (`scr-bench grade --input results/raw/`) — sensitivity check against a different grader model.
-- GitHub commit-SHA snapshot per URL run (reproducibility) — `git ls-remote` at run start, logged into the record.
+- GitHub commit-SHA snapshot per URL run — `git ls-remote` at run start, logged into the record.

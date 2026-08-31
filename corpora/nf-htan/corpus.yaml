@@ -42,12 +42,28 @@ sources:
   mcp:
     project_id: 80215e05a1ba4dd8a37e0a21a2f39605
 
-# Field-order shuffle for the A4 / refusal cells (SA-ISR §8). The benchmarked
-# a/b/c/d cells are already recorded, so this only affects new runs.
+# Field-order shuffle for the A4 / refusal cells (SA-ISR §8).
+#
+# TWO-PASS PROTOCOL for the Aug-2026 sonnet-4-6 sweep:
+#   pass 1 (sonnet x exact/ambiguous/foreign/chimeric) runs with this FALSE, so
+#          those cells match the April opus/haiku a-d cells on field order;
+#   pass 2 (sonnet + opus x underdetermined) runs with this TRUE, so the A4 cells
+#          match the July haiku A4 cells, which were shuffled.
+# Currently set for PASS 2 (pass 1 completed 31 Aug 2026).
 shuffle_field_order: true
 
-# Optional per-corpus overrides of the global matrix, e.g.:
+# Per-corpus override of the global model list. Sonnet 4.6 is the middle tier
+# between opus-4-7 and haiku-4-5 (same 4.x generation, so the sweep varies
+# capability tier only). It is declared HERE rather than in the root config.yaml
+# so it applies to nf-htan alone: ROADMAP item A freezes single-schema scaling on
+# the fhir / openehr corpora, and a global entry would open 45 cells on each.
+models:
+  - id: opus-4-7
+    alias: claude-opus-4-7
+  - id: sonnet-4-6
+    alias: claude-sonnet-4-6
+  - id: haiku-4-5
+    alias: claude-haiku-4-5-20251001
+
+# Other per-corpus overrides of the global matrix, e.g.:
 # reps_per_model: 5
-# models:
-#   - id: opus-4-7
-#     alias: claude-opus-4-7
