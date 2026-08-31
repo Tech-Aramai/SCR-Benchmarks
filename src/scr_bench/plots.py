@@ -9,6 +9,8 @@ from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
 
+from .metrics import COST_METRICS, METRIC_LABELS
+
 
 def _save(fig, out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -22,13 +24,18 @@ def plot_tokens_to_correct(
     out_path: Path,
     *,
     sample_type: str = "exact",
+    metric: str = "billed",
 ) -> Path:
-    """Grouped bar chart, x=variant, grouped by model, y=mean total_tokens on
-    correct runs of one sample_type.
+    """Grouped bar chart, x=variant, grouped by model, y=mean cost of a correct
+    run of one sample_type.
+
+    `metric` selects the cost measure (see metrics.COST_METRICS); the default
+    `billed` counts cache traffic, which dominates the MCP variant.
 
     Falls back to single-bar layout when only one model is present.
     Saves both PNG and SVG (matplotlib infers from extension).
     """
+    cost_fn = COST_METRICS[metric]
     filtered = [
         r for r in runs
         if r.get("sample_type") == sample_type
@@ -48,9 +55,12 @@ def plot_tokens_to_correct(
         _save(fig, out_path)
         return out_path
 
-    buckets: dict[tuple[str, str], list[int]] = defaultdict(list)
+    buckets: dict[tuple[str, str], list[float]] = defaultdict(list)
     for r in filtered:
-        buckets[(r["model_id"], r["variant"])].append(r["total_tokens"])
+        value = cost_fn(r)
+        if value is None:  # unpriced model under metric="cost"
+            continue
+        buckets[(r["model_id"], r["variant"])].append(value)
 
     variants = sorted({v for (_m, v) in buckets.keys()})
     models = sorted({m for (m, _v) in buckets.keys()})
@@ -85,7 +95,7 @@ def plot_tokens_to_correct(
     ax.set_xticks(x)
     ax.set_xticklabels(variants)
     ax.set_xlabel("Retrieval variant")
-    ax.set_ylabel("Mean total tokens (correct runs)")
+    ax.set_ylabel(METRIC_LABELS[metric])
     ax.set_title(f"Tokens-to-correct on sample_type={sample_type}")
     if len(models) > 1:
         ax.legend(title="model")

@@ -9,7 +9,14 @@ import sys
 from pathlib import Path
 
 from .config import load_config
-from .metrics import load_runs, matrix_coverage, status_summary, tokens_to_correct
+from .metrics import (
+    billed_tokens,
+    cost_usd,
+    load_runs,
+    matrix_coverage,
+    status_summary,
+    tokens_to_correct,
+)
 from .plots import plot_correctness_by_model, plot_tokens_to_correct
 from .runner import iter_matrix, load_samples, run_matrix
 
@@ -132,6 +139,14 @@ def _cmd_report(cfg) -> int:
         print(f"no runs in {cfg.manifest_path} — run `scr-bench run` first")
         return 1
 
+    # Derived cost columns. Computed here rather than at run time so every row
+    # carries them, including those recorded before the metrics existed — the
+    # record's own `total_tokens` excludes cache traffic and understates MCP.
+    for r in runs:
+        r["billed_tokens"] = billed_tokens(r)
+        c = cost_usd(r)
+        r["cost_usd"] = round(c, 6) if c is not None else None
+
     cfg.csv_path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = sorted({k for r in runs for k in r.keys()})
     with open(cfg.csv_path, "w", newline="", encoding="utf-8") as f:
@@ -154,13 +169,19 @@ def _cmd_report(cfg) -> int:
     print(f"wrote {correctness_out} (and .svg sibling)")
 
     print("\ntokens_to_correct (correct runs only):")
-    stats = tokens_to_correct(runs)
-    if not stats:
+    print("  billed = input+output+cache; in_out = the older cache-blind figure")
+    billed = tokens_to_correct(runs, metric="billed")
+    in_out = tokens_to_correct(runs, metric="in_out")
+    costs = tokens_to_correct(runs, metric="cost")
+    if not billed:
         print("  (no correct runs yet)")
-    for (model_id, variant, sample_type), s in sorted(stats.items()):
+    for key, s in sorted(billed.items()):
+        model_id, variant, sample_type = key
         print(
-            f"  {model_id:10s} {variant:6s} {sample_type:12s} "
-            f"mean={s['mean']:.0f} stdev={s['stdev']:.0f} n={s['n']}"
+            f"  {model_id:10s} {variant:6s} {sample_type:15s} "
+            f"billed={s['mean']:>9.0f} stdev={s['stdev']:>8.0f} "
+            f"in_out={in_out[key]['mean']:>8.0f} "
+            f"${costs[key]['mean']:.4f} n={s['n']}"
         )
     return 0
 
