@@ -19,3 +19,6 @@ corpora/*/fixtures/zip/
 docs/
 
 *.log
+
+# Claude Code session transcripts (archived by the SessionEnd/Stop hook)
+.claude/transcripts/
